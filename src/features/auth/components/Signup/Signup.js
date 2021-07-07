@@ -4,6 +4,7 @@ import signupImg from '../../../../assets/images/signup_img.jpg';
 
 const Container = styled.div`
   width: 800px;
+  min-width: 340px;
   height: 580px;
   border-radius: 7px;
   margin: 150px auto 0 auto;
@@ -12,12 +13,36 @@ const Container = styled.div`
     0 1.3px 5.3px rgba(0, 0, 0, 0.028), 0 2.4px 10px rgba(0, 0, 0, 0.035),
     0 4.2px 17.9px rgba(0, 0, 0, 0.042), 0 7.9px 33.4px rgba(0, 0, 0, 0.05),
     0 19px 80px rgba(0, 0, 0, 0.07);
+
+  @media only screen and (max-width: 1024px) {
+    width: 100%;
+    border-radius: 0;
+  }
 `;
 
 const LoginWrapper = styled.section`
   width: 430px;
   margin: 0;
   padding: 50px 5%;
+  @media only screen and (max-width: 1024px) {
+    width: 60%;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    padding: 50px 16%;
+  }
+  @media only screen and (max-width: 520px) {
+    width: 100%;
+    padding: 50px 14%;
+  }
+  @media only screen and (max-width: 440px) {
+    width: 100%;
+    padding: 50px 6%;
+  }
+  @media only screen and (max-width: 380px) {
+    width: 100%;
+    padding: 50px 2%;
+  }
 `;
 
 const ImageWrapper = styled.section`
@@ -25,6 +50,12 @@ const ImageWrapper = styled.section`
   height: 100%;
   margin: 0;
   padding: 0;
+  @media only screen and (max-width: 1024px) {
+    width: 40%;
+  }
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Image = styled.img`
@@ -32,6 +63,10 @@ const Image = styled.img`
   height: 100%;
   object-fit: cover;
   border-radius: 0 7px 7px 0;
+  @media only screen and (max-width: 1024px) {
+    width: 100%;
+    border-radius: 0;
+  }
 `;
 
 const Headline = styled.h1`
@@ -51,13 +86,12 @@ const H2 = styled.h2`
 `;
 
 const Form = styled.form`
-  margin: 20px 50px;
+  margin: 20px 10%;
   display: flex;
   flex-direction: column;
 `;
 
 const Input = styled.input`
-  width: 100%;
   margin: 6px 0;
   padding: 9px 10px;
   border-radius: 7px;
@@ -85,6 +119,7 @@ const Button = styled.button`
 const P = styled.p`
   text-align: center;
   color: #3e494e;
+  font-size: 0.95rem;
 `;
 
 const Link = styled.a`
