@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 import signupImg from '../../../../assets/images/signup_img.jpg';
 
@@ -122,7 +123,7 @@ const P = styled.p`
   font-size: 0.95rem;
 `;
 
-const Link = styled.a`
+const Link = styled(NavLink)`
   text-decoration: none;
   color: #5b86a7;
 `;
@@ -141,7 +142,7 @@ const Signup = () => {
           <Button type='submit'>Sign up</Button>
         </Form>
         <P>
-          Have an account? <Link href='#'>Log in</Link>
+          Have an account? <Link to='/'>Log in</Link>
         </P>
       </LoginWrapper>
       <ImageWrapper>
