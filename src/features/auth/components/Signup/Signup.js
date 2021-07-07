@@ -1,5 +1,18 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  onEmailChange,
+  onFullnameChange,
+  onUsernameChange,
+  onPasswordChange,
+} from '../../authSlice/signUpSlice';
+import {
+  selectEmail,
+  selectFullname,
+  selectUsername,
+  selectPassword,
+} from '../../authSlice/signUpSlice';
 
 import signupImg from '../../../../assets/images/signup_img.jpg';
 
@@ -129,16 +142,74 @@ const Link = styled(NavLink)`
 `;
 
 const Signup = () => {
+  const emailValue = useSelector(selectEmail);
+  const fullnameValue = useSelector(selectFullname);
+  const usernameValue = useSelector(selectUsername);
+  const passwordValue = useSelector(selectPassword);
+
+  const dispatch = useDispatch();
+
+  const handleOnChange = (e, input) => {
+    switch (input) {
+      case 'email':
+        dispatch(onEmailChange(e.target.value));
+        break;
+      case 'fullname':
+        dispatch(onFullnameChange(e.target.value));
+        break;
+      case 'username':
+        dispatch(onUsernameChange(e.target.value));
+        break;
+      case 'password':
+        dispatch(onPasswordChange(e.target.value));
+        break;
+      default:
+        return;
+    }
+  };
+
   return (
     <Container>
       <LoginWrapper>
         <Headline>Create Account</Headline>
         <Form>
           <H2>Sign up to see photos and videos from your friends.</H2>
-          <Input type='email' name='email' placeholder='email' />
-          <Input type='text' name='fullname' placeholder='fullname' />
-          <Input type='text' name='username' placeholder='username' />
-          <Input type='password' name='password' placeholder='password' />
+          <Input
+            type='email'
+            name='email'
+            value={emailValue}
+            onChange={(e) => {
+              handleOnChange(e, 'email');
+            }}
+            placeholder='email'
+          />
+          <Input
+            type='text'
+            name='fullname'
+            value={fullnameValue}
+            onChange={(e) => {
+              handleOnChange(e, 'fullname');
+            }}
+            placeholder='fullname'
+          />
+          <Input
+            type='text'
+            name='username'
+            value={usernameValue}
+            onChange={(e) => {
+              handleOnChange(e, 'username');
+            }}
+            placeholder='username'
+          />
+          <Input
+            type='password'
+            name='password'
+            value={passwordValue}
+            onChange={(e) => {
+              handleOnChange(e, 'password');
+            }}
+            placeholder='password'
+          />
           <Button type='submit'>Sign up</Button>
         </Form>
         <P>
