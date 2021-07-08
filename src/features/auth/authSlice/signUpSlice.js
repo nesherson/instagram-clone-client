@@ -1,14 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+import { postSignUpData } from '../../../util/api';
+
+export const onSubmit = createAsyncThunk(
+  'signUp/onSubmit',
+  async (arg, thunkAPI) => {
+    console.log('createAsyncThunk/onSubmit: ', arg);
+    const response = await postSignUpData(
+      'http://localhost:5000/auth/signup',
+      arg
+    );
+
+    return response;
+  }
+);
 
 const initialState = {
   email: '',
   fullname: '',
   username: '',
   password: '',
+  isLoading: false,
+  hasError: false,
+  error: null,
 };
 
 export const signUpSlice = createSlice({
-  name: 'signup',
+  name: 'signUp',
   initialState,
   reducers: {
     onEmailChange: (state, action) => {
@@ -23,14 +41,29 @@ export const signUpSlice = createSlice({
     onPasswordChange: (state, action) => {
       state.password = action.payload;
     },
-    onSubmit: (state) => {},
+  },
+  extraReducers: {
+    [onSubmit.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.hasError = false;
+    },
+    [onSubmit.pending]: (state, action) => {
+      state.isLoading = true;
+      state.hasError = false;
+    },
+    [onSubmit.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.hasError = true;
+      console.log('onSubmit.rejected: ', action.payload);
+      state.error = action.payload.error;
+    },
   },
 });
 
-export const selectEmail = (state) => state.email;
-export const selectFullname = (state) => state.fullname;
-export const selectUsername = (state) => state.username;
-export const selectPassword = (state) => state.password;
+export const selectEmail = (state) => state.signUp.email;
+export const selectFullname = (state) => state.signUp.fullname;
+export const selectUsername = (state) => state.signUp.username;
+export const selectPassword = (state) => state.signUp.password;
 
 export const {
   onEmailChange,
