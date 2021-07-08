@@ -6,6 +6,7 @@ import {
   onFullnameChange,
   onUsernameChange,
   onPasswordChange,
+  onSubmit,
 } from '../../authSlice/signUpSlice';
 import {
   selectEmail,
@@ -152,6 +153,8 @@ const Signup = () => {
   const handleOnChange = (e, input) => {
     switch (input) {
       case 'email':
+        console.log('emailValue: ', emailValue);
+
         dispatch(onEmailChange(e.target.value));
         break;
       case 'fullname':
@@ -168,11 +171,30 @@ const Signup = () => {
     }
   };
 
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+
+    const userData = {
+      email: emailValue,
+      fullname: fullnameValue,
+      username: usernameValue,
+      password: passwordValue,
+    };
+
+    dispatch(onSubmit(userData))
+      .then((res) => {
+        console.log('signup/onSubmit: ', res.payload.msg);
+      })
+      .catch((err) => {
+        console.log('signup/onSubmit - err: ', err);
+      });
+  };
+
   return (
     <Container>
       <LoginWrapper>
         <Headline>Create Account</Headline>
-        <Form>
+        <Form onSubmit={handleOnSubmit}>
           <H2>Sign up to see photos and videos from your friends.</H2>
           <Input
             type='email'
