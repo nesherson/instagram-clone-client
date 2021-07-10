@@ -1,28 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-import { postSignUpData } from '../../../util/api';
-
-export const onSubmit = createAsyncThunk(
-  'signUp/onSubmit',
-  async (arg, thunkAPI) => {
-    console.log('createAsyncThunk/onSubmit: ', arg);
-    const response = await postSignUpData(
-      'http://localhost:5000/auth/signup',
-      arg
-    );
-
-    return response;
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   email: '',
   fullname: '',
   username: '',
   password: '',
-  isLoading: false,
-  hasError: false,
-  error: null,
 };
 
 export const signUpSlice = createSlice({
@@ -40,22 +22,6 @@ export const signUpSlice = createSlice({
     },
     onPasswordChange: (state, action) => {
       state.password = action.payload;
-    },
-  },
-  extraReducers: {
-    [onSubmit.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.hasError = false;
-    },
-    [onSubmit.pending]: (state, action) => {
-      state.isLoading = true;
-      state.hasError = false;
-    },
-    [onSubmit.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.hasError = true;
-      console.log('onSubmit.rejected: ', action.payload);
-      state.error = action.payload.error;
     },
   },
 });
