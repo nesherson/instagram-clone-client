@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+import { onImageUrlChange, onCaptionChange } from '../postsSlice/newPostSlice';
+import { selectNewPost } from '../postsSlice/newPostSlice';
+
 import testImg from '../../../assets/images/test.jpg';
 
 const Container = styled.div`
@@ -12,6 +17,11 @@ const Container = styled.div`
   border-radius: 7px;
   padding: 10px;
   display: flex;
+  @media only screen and (max-width: 632px) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    padding: 10px 2%;
+  }
 `;
 
 const UserImage = styled.div`
@@ -19,6 +29,9 @@ const UserImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  @media only screen and (max-width: 420px) {
+    display: none;
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -41,6 +54,15 @@ const Form = styled.form`
   flex-grow: 3;
   max-width: 506px;
   min-width: 506px;
+  @media only screen and (max-width: 632px) {
+    min-width: 320px;
+    flex-grow: 4;
+  }
+`;
+
+const FormControl = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
 const Input = styled.input`
@@ -52,11 +74,14 @@ const Input = styled.input`
   outline: none;
   margin-bottom: 3px;
   padding: 7px;
-
+  width: 425px;
   &:focus {
     background-color: #f0f2f4;
   }
   transition: background-color 200ms ease;
+  @media only screen and (max-width: 632px) {
+    width: 80%;
+  }
 `;
 
 const Textarea = styled.textarea`
@@ -68,16 +93,51 @@ const Textarea = styled.textarea`
   border-radius: 6px;
   margin-top: 3px;
   padding: 7px;
-  max-width: 492px;
-  min-width: 492px;
-  height: 100%;
+  max-width: 506px;
+  min-width: 506px;
+  box-sizing: border-box;
+
   &:focus {
     background-color: #f0f2f4;
   }
   transition: background-color 200ms ease;
+
+  @media only screen and (max-width: 632px) {
+    min-width: 240px;
+    width: 100%;
+  }
+`;
+
+const Button = styled.button`
+  border: none;
+  border-radius: 6px;
+  padding: 7px;
+  margin-left: 5px;
+  background-color: #5b86a7;
+  color: #fff;
+  width: 60px;
+  @media only screen and (max-width: 632px) {
+    width: 14%;
+  }
 `;
 
 function NewPost() {
+  const dispatch = useDispatch();
+  const { imageUrl, caption } = useSelector(selectNewPost);
+
+  const handleOnChange = (e, input) => {
+    switch (input) {
+      case 'imageUrl':
+        dispatch(onImageUrlChange(e.target.value));
+        break;
+      case 'caption':
+        dispatch(onCaptionChange(e.target.value));
+        break;
+      default:
+        return;
+    }
+  };
+
   return (
     <Container>
       <UserImage>
@@ -86,10 +146,29 @@ function NewPost() {
         </ImageWrapper>
       </UserImage>
       <Form>
-        <Input type='text' placeholder='Paste a URL' />
-        <Textarea name='' id=''>
-          Write caption...
-        </Textarea>
+        <FormControl>
+          <Input
+            type='text'
+            placeholder='Paste a URL'
+            value={imageUrl}
+            onChange={(e) => {
+              handleOnChange(e, 'imageUrl');
+            }}
+          />
+          <Button type='submit'>Post</Button>
+        </FormControl>
+        <FormControl>
+          <Textarea
+            name=''
+            id=''
+            value={caption}
+            onChange={(e) => {
+              handleOnChange(e, 'caption');
+            }}
+          >
+            Write caption...
+          </Textarea>
+        </FormControl>
       </Form>
     </Container>
   );
