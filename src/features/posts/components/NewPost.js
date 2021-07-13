@@ -2,10 +2,12 @@ import styled from 'styled-components';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import { onImageUrlChange, onCaptionChange } from '../postsSlice/newPostSlice';
+import {
+  onImageUrlChange,
+  onCaptionChange,
+  submitNewPost,
+} from '../postsSlice/newPostSlice';
 import { selectNewPost } from '../postsSlice/newPostSlice';
-
-import testImg from '../../../assets/images/test.jpg';
 
 const Container = styled.div`
   border: 1px solid rgba(204, 204, 204, 0.3);
@@ -121,7 +123,7 @@ const Button = styled.button`
   }
 `;
 
-function NewPost() {
+function NewPost({ profileImg }) {
   const dispatch = useDispatch();
   const { imageUrl, caption } = useSelector(selectNewPost);
 
@@ -138,14 +140,30 @@ function NewPost() {
     }
   };
 
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+
+    const values = {
+      imageUrl: imageUrl,
+      caption: caption,
+    };
+    dispatch(submitNewPost(values))
+      .then((res) => {
+        console.log('submitNewPost/res: ', res);
+      })
+      .catch((err) => {
+        console.log('submitNewPost/err: ', err);
+      });
+  };
+
   return (
     <Container>
       <UserImage>
         <ImageWrapper>
-          <Img src={testImg} />
+          <Img src={profileImg} />
         </ImageWrapper>
       </UserImage>
-      <Form>
+      <Form onSubmit={handleOnSubmit}>
         <FormControl>
           <Input
             type='text'
