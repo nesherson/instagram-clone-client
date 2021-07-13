@@ -1,19 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const submitNewComment = createAsyncThunk(
-  'newPost/submitNewPost',
-  async ({ text }, thunkAPI) => {
+  'newComment/submitNewComment',
+  async ({ postId, commentText }, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/post/add-comment', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
-        body: JSON.stringify({ text }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/post/${postId}/add-comment`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+          body: JSON.stringify({ commentText }),
+        }
+      );
 
       let data = await response.json();
 
@@ -79,11 +82,10 @@ const newCommentSlice = createSlice({
   },
 });
 
-export const selectNewComment = (state) => state.newComment.comments;
+export const selectNewComment = (state) => {
+  return state.newComment.comments;
+};
 
-export const selectNewCommentByPostId = (state, postId) =>
-  state.newComment.comments;
-
-export const { onTextChange, returnCommentText } = newCommentSlice.actions;
+export const { onTextChange } = newCommentSlice.actions;
 
 export default newCommentSlice.reducer;

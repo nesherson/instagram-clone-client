@@ -134,21 +134,38 @@ const Button = styled.button`
 function Post({ id, username, profileImg, postImg, likes, caption }) {
   const dispatch = useDispatch();
 
-  const newCommentText = useSelector((state, id) =>
-    selectNewCommentByPostId(state, id)
-  ).commentText;
+  const newComment = useSelector((state) => {
+    const index = state.newComment.comments.findIndex(
+      (comment) => comment.postId === id
+    );
+    if (index !== -1) {
+      return state.newComment.comments[index].commentText;
+    } else {
+      return '';
+    }
+  });
 
-  //console.log('test: ', test);
+  const comments = useSelector(selectNewComment);
 
   const handleOnChange = (e) => {
     const values = {
       postId: id,
       commentText: e.target.value,
     };
-
-    console.log('post: ', values);
-
     dispatch(onTextChange(values));
+  };
+
+  const handleOnClick = () => {
+    const index = comments.findIndex((comment) => comment.postId === id);
+
+    const values = {
+      postId: id,
+      commentText: comments[index].commentText,
+    };
+
+    console.log('values: ', values);
+
+    dispatch(submitNewComment(values));
   };
 
   return (
@@ -204,11 +221,11 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
       <NewComment>
         <Input
           type='text'
-          value={newCommentText}
+          value={newComment}
           onChange={handleOnChange}
           placeholder='Add a comment...'
         />
-        <Button>Post</Button>
+        <Button onClick={handleOnClick}>Post</Button>
       </NewComment>
     </Container>
   );
