@@ -2,12 +2,16 @@ import styled from 'styled-components';
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectNewComment } from '../postsSlice/newCommentSlice';
+import {
+  selectNewComments,
+  selectNewComment,
+} from '../postsSlice/newCommentSlice';
 import {
   onTextChange,
+  clearState,
   submitNewComment,
-  selectNewCommentByPostId,
 } from '../postsSlice/newCommentSlice';
+import { useEffect } from 'react';
 
 const Container = styled.article`
   border: 1px solid rgba(204, 204, 204, 0.3);
@@ -126,15 +130,17 @@ const Button = styled.button`
   border-radius: 6px;
   padding: 7px;
   margin-left: 5px;
-  background-color: #5b86a7;
+  background-color: ${(props) => (props.disabled ? '#bdcedb' : '#5b86a7')};
   color: #fff;
   width: 10%;
 `;
 
 function Post({ id, username, profileImg, postImg, likes, caption }) {
   const dispatch = useDispatch();
+  const newComments = useSelector(selectNewComments);
+  const { isSuccess } = useSelector(selectNewComment);
 
-  const newComment = useSelector((state) => {
+  const newCommentText = useSelector((state) => {
     const index = state.newComment.comments.findIndex(
       (comment) => comment.postId === id
     );
@@ -145,9 +151,8 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
     }
   });
 
-  const comments = useSelector(selectNewComment);
-
   const handleOnChange = (e) => {
+    console.log('e.target.value: ', e.target.value);
     const values = {
       postId: id,
       commentText: e.target.value,
@@ -156,17 +161,28 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
   };
 
   const handleOnClick = () => {
-    const index = comments.findIndex((comment) => comment.postId === id);
+    const index = newComments.findIndex((comment) => comment.postId === id);
 
     const values = {
       postId: id,
-      commentText: comments[index].commentText,
+      commentText: newComments[index].commentText,
     };
-
-    console.log('values: ', values);
 
     dispatch(submitNewComment(values));
   };
+
+  const isInputEmpty = () => {
+    const index = newComments.findIndex((comment) => comment.postId === id);
+    if (index === -1) {
+      return true;
+    } else {
+      return newComments[index].commentText === '';
+    }
+  };
+
+  useEffect(() => {
+    dispatch(clearState());
+  }, [dispatch, isSuccess]);
 
   return (
     <Container>
@@ -221,11 +237,13 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
       <NewComment>
         <Input
           type='text'
-          value={newComment}
+          value={newCommentText}
           onChange={handleOnChange}
           placeholder='Add a comment...'
         />
-        <Button onClick={handleOnClick}>Post</Button>
+        <Button disabled={isInputEmpty()} onClick={handleOnClick}>
+          Post
+        </Button>
       </NewComment>
     </Container>
   );

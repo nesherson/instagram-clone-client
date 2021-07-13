@@ -63,6 +63,9 @@ const newCommentSlice = createSlice({
         commentText,
       };
     },
+    clearState: (state) => {
+      state.comments = [];
+    },
   },
   extraReducers: {
     [submitNewComment.fulfilled]: (state, action) => {
@@ -82,10 +85,12 @@ const newCommentSlice = createSlice({
   },
 });
 
-export const selectNewComment = (state) => {
+export const selectNewComments = (state) => {
   return state.newComment.comments;
 };
 
-export const { onTextChange } = newCommentSlice.actions;
+export const selectNewComment = (state) => state.newComment;
+
+export const { onTextChange, clearState } = newCommentSlice.actions;
 
 export default newCommentSlice.reducer;
