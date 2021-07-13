@@ -3,7 +3,7 @@ import { User, Bookmark, Settings } from 'react-feather';
 
 const Container = styled.div`
   position: absolute;
-  z-index: 20;
+  z-index: 999;
   top: 62px;
   width: 270px;
   transform: translateX(-45%);
@@ -12,7 +12,7 @@ const Container = styled.div`
     0 4.2px 17.9px rgba(0, 0, 0, 0.042), 0 7.9px 33.4px rgba(0, 0, 0, 0.05),
     0 19px 80px rgba(0, 0, 0, 0.07);
   border-radius: 7px;
-
+  background-color: #fff;
   overflow: hidden;
 `;
 
@@ -46,11 +46,11 @@ const Icon = styled.span`
   border: 1px solid rgba(204, 204, 204, 0.3);
 `;
 
-const Divider = styled.li`
+const Divider = styled.span`
+  display: block;
   background: rgba(204, 204, 204, 0.3);
   height: 1px;
   margin: 5px 0;
-  list-style: none;
 `;
 
 function DropdownMenu() {

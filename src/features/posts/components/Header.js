@@ -1,9 +1,13 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
 import { Home, Compass, User } from 'react-feather';
 
+import NavItem from './NavItem';
+import DropdownMenu from './DropdownMenu';
+
 const MainContainer = styled.section`
+  background-color: #fff;
   position: fixed;
+  z-index: 50;
   top: 0;
   width: 100%;
   height: 64px;
@@ -26,15 +30,13 @@ const Headline = styled.h1`
 
 const LogoWrapper = styled.div``;
 
-const IconsWrapper = styled.div`
+const Nav = styled.ul`
   display: flex;
   justify-content: space-evenly;
   width: 200px;
-`;
-
-const NavItem = styled(NavLink)`
-  cursor: pointer;
-  fill: red;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
 function Header() {
@@ -44,15 +46,13 @@ function Header() {
         <LogoWrapper>
           <Headline>Instaclone</Headline>
         </LogoWrapper>
-        <IconsWrapper>
-          <NavItem to='/'>
-            <Home color='#000' size={24} />
+        <Nav>
+          <NavItem icon={<Home width={22} />} to='/' />
+          <NavItem icon={<Compass width={22} />} to='/explore' />
+          <NavItem icon={<User width={22} />} to='#'>
+            <DropdownMenu />
           </NavItem>
-          <NavItem to='/explore'>
-            <Compass color='#000' size={24} />
-          </NavItem>
-          <User color='#000' size={24} />
-        </IconsWrapper>
+        </Nav>
       </Container>
     </MainContainer>
   );
