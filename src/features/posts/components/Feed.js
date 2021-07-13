@@ -1,8 +1,17 @@
 import styled from 'styled-components';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { selectPosts } from '../postsSlice/postListSlice';
+import { fetchPosts } from '../postsSlice/postListSlice';
+
+import { selectUser } from '../../user/userSlice/userSlice';
+import { fetchUserByToken } from '../../user/userSlice/userSlice';
 
 import Header from './Header';
 import Posts from './Posts';
 import NewPost from './NewPost';
+import UserDetails from './UserDetails';
 
 const Container = styled.div`
   padding-top: 94px;
@@ -10,7 +19,7 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 130px auto;
   grid-template-columns: 1fr 614px 322px 1fr;
-  column-count: 15px;
+  grid-column-gap: 30px;
   background-color: #fbfbfb;
   min-width: 320px;
   @media only screen and (max-width: 1024px) {
@@ -23,11 +32,30 @@ const Container = styled.div`
 `;
 
 function Feed() {
+  const dispatch = useDispatch();
+  const { username, fullname, profileImg } = useSelector(selectUser);
+  const posts = useSelector(selectPosts);
+
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    dispatch(fetchUserByToken(token));
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchPosts(token));
+  }, []);
+
   return (
     <Container>
       <Header />
-      <NewPost />
-      {/* <Posts /> */}
+      <NewPost profileImg={profileImg} />
+      <UserDetails
+        username={username}
+        fullname={fullname}
+        profileImg={profileImg}
+      />
+      <Posts postList={posts} />
     </Container>
   );
 }
