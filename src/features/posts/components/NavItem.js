@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
@@ -30,11 +31,18 @@ const Icon = styled.div`
 `;
 
 function NavItem(props) {
+  const [open, setOpen] = useState(false);
+
+  const handleOnClick = () => {
+    setOpen((prevState) => !prevState);
+  };
+
   return (
     <Item>
-      <Link to={props.to}>
+      <Link to={props.to} onClick={handleOnClick}>
         <Icon>{props.icon}</Icon>
       </Link>
+      {open ? props.children : null}
     </Item>
   );
 }
