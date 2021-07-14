@@ -16,6 +16,8 @@ import {
 
 import { selectComments } from '../postsSlice/commentListSlice';
 
+import { likePost } from '../postsSlice/postListSlice';
+
 const Container = styled.article`
   border: 1px solid rgba(204, 204, 204, 0.3);
   margin-top: 30px;
@@ -195,6 +197,10 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
     dispatch(submitNewComment(values));
   };
 
+  const handleLikePost = () => {
+    dispatch(likePost(id));
+  };
+
   const isInputEmpty = () => {
     const index = newComments.findIndex((comment) => comment.postId === id);
     if (index === -1) {
@@ -231,7 +237,7 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
       <PostBody>
         <Social>
           <IconsWrapper>
-            <IconLeft>
+            <IconLeft onClick={handleLikePost}>
               <Heart size={30} strokeWidth={1.3} />
             </IconLeft>
             <IconLeft>
