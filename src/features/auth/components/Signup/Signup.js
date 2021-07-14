@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   onEmailChange,
   onFullnameChange,
   onUsernameChange,
   onPasswordChange,
-  onSubmit,
 } from '../../authSlice/signUpSlice';
 import {
   selectEmail,
@@ -15,7 +15,9 @@ import {
   selectPassword,
 } from '../../authSlice/signUpSlice';
 
-import signupImg from '../../../../assets/images/signup_img.jpg';
+import { signupUser } from '../../../user/userSlice/userSlice';
+
+import img from '../../../../assets/images/signup_img.jpg';
 
 const Container = styled.div`
   width: 800px;
@@ -148,13 +150,13 @@ const Signup = () => {
   const usernameValue = useSelector(selectUsername);
   const passwordValue = useSelector(selectPassword);
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
 
   const handleOnChange = (e, input) => {
     switch (input) {
       case 'email':
-        console.log('emailValue: ', emailValue);
-
         dispatch(onEmailChange(e.target.value));
         break;
       case 'fullname':
@@ -181,9 +183,10 @@ const Signup = () => {
       password: passwordValue,
     };
 
-    dispatch(onSubmit(userData))
+    dispatch(signupUser(userData))
       .then((res) => {
-        console.log('signup/onSubmit: ', res.payload.msg);
+        console.log('signup/onSubmit: ', res.payload);
+        history.push('/');
       })
       .catch((err) => {
         console.log('signup/onSubmit - err: ', err);
@@ -239,7 +242,7 @@ const Signup = () => {
         </P>
       </LoginWrapper>
       <ImageWrapper>
-        <Image src={signupImg} alt='two hands trying to touch' />
+        <Image src={img} alt='two hands trying to touch' />
         {/*Image author: https://unsplash.com/photos/iJ2IG8ckCpA?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink*/}
       </ImageWrapper>
     </Container>

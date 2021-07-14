@@ -1,5 +1,18 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { useEffect } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+
+import {
+  onEmailChange,
+  onPasswordChange,
+  clearInput,
+} from '../../authSlice/logInSlice';
+import { selectEmail, selectPassword } from '../../authSlice/logInSlice';
+
+import { selectUser } from '../../../user/userSlice/userSlice';
+
+import { loginUser } from '../../../user/userSlice/userSlice';
 
 import signupImg from '../../../../assets/images/signup_img.jpg';
 
@@ -128,15 +141,89 @@ const Link = styled(NavLink)`
   color: #5b86a7;
 `;
 
-const Signup = () => {
+const LogIn = () => {
+  const emailValue = useSelector(selectEmail);
+  const passwordValue = useSelector(selectPassword);
+
+  const user = useSelector(selectUser);
+  const { isSuccess } = useSelector(selectUser);
+
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const handleOnChange = (e, input) => {
+    switch (input) {
+      case 'email':
+        dispatch(onEmailChange(e.target.value));
+        break;
+      case 'password':
+        dispatch(onPasswordChange(e.target.value));
+        break;
+      default:
+        return;
+    }
+  };
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+
+    const userData = {
+      email: emailValue,
+      password: passwordValue,
+    };
+
+    dispatch(loginUser(userData))
+      .then((res) => {
+        console.log('loginUser/res: ', res);
+      })
+      .catch((err) => {
+        console.log('loginUser/res: ', err);
+      });
+
+    dispatch(clearInput());
+  };
+
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    if (token) {
+      history.push('/feed');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      history.push('/feed');
+    }
+  }, [isSuccess]);
+
+  console.log('user ', user);
+  console.log('isSuccess ', isSuccess);
+
   return (
     <Container>
       <LoginWrapper>
         <Headline>Welcome back</Headline>
-        <Form>
+        <Form onSubmit={handleOnSubmit}>
           <H2>Let's sign you in</H2>
-          <Input type='email' name='email' placeholder='email' />
-          <Input type='password' name='password' placeholder='password' />
+          <Input
+            type='email'
+            name='email'
+            value={emailValue}
+            onChange={(e) => {
+              handleOnChange(e, 'email');
+            }}
+            placeholder='email'
+          />
+          <Input
+            type='password'
+            name='password'
+            value={passwordValue}
+            onChange={(e) => {
+              handleOnChange(e, 'password');
+            }}
+            placeholder='password'
+          />
           <Button type='submit'>Log in</Button>
         </Form>
         <P>
@@ -151,4 +238,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default LogIn;

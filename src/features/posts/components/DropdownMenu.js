@@ -1,5 +1,9 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import { User, Bookmark, Settings } from 'react-feather';
+import { useSelector } from 'react-redux';
+
+import { selectUser } from '../../user/userSlice/userSlice';
 
 const Container = styled.div`
   position: absolute;
@@ -16,7 +20,7 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const MenuItem = styled.a`
+const MenuItem = styled(NavLink)`
   display: flex;
   align-items: center;
   border-radius: 7px;
@@ -56,20 +60,28 @@ const Divider = styled.span`
 function DropdownMenu() {
   function DropdownItem(props) {
     return (
-      <MenuItem href='#'>
+      <MenuItem to={props.to}>
         {props.icon ? <Icon>{props.icon}</Icon> : null}
         {props.children}
       </MenuItem>
     );
   }
 
+  const { username } = useSelector(selectUser);
+
   return (
     <Container>
-      <DropdownItem icon={<User width={20} />}>Profile</DropdownItem>
-      <DropdownItem icon={<Bookmark width={20} />}>Saved</DropdownItem>
-      <DropdownItem icon={<Settings width={20} />}>Settings</DropdownItem>
+      <DropdownItem to={`/${username}`} icon={<User width={20} />}>
+        Profile
+      </DropdownItem>
+      <DropdownItem to='#' icon={<Bookmark width={20} />}>
+        Saved
+      </DropdownItem>
+      <DropdownItem to='#' icon={<Settings width={20} />}>
+        Settings
+      </DropdownItem>
       <Divider />
-      <DropdownItem>Log out</DropdownItem>
+      <DropdownItem to='#'>Log out</DropdownItem>
     </Container>
   );
 }

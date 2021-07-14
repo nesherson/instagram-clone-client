@@ -6,6 +6,7 @@ import DropdownMenu from './DropdownMenu';
 
 const MainContainer = styled.section`
   background-color: #fff;
+  z-index: 999;
   position: fixed;
   top: 0;
   width: 100%;

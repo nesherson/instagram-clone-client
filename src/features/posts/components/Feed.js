@@ -16,7 +16,7 @@ import Posts from './Posts';
 import NewPost from './NewPost';
 import UserDetails from './UserDetails';
 
-const Container = styled.div`
+const Container = styled.section`
   padding-top: 94px;
   height: 100%;
   display: grid;
