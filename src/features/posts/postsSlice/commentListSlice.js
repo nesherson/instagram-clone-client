@@ -2,20 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchComments = createAsyncThunk(
   'commentList/fetchComments',
-  async ({ postId }, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(
-        `http://localhost:5000/post/${postId}/comments`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:5000/post/comments`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      });
 
       let data = await response.json();
 
@@ -47,6 +44,7 @@ const commentListSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
+      state.comments = action.payload.comments;
     },
     [fetchComments.pending]: (state, action) => {
       state.isFetching = true;
@@ -63,7 +61,5 @@ const commentListSlice = createSlice({
 export const selectComments = (state) => {
   return state.commentList.comments;
 };
-
-//export const { onTextChange, clearState } = newCommentSlice.actions;
 
 export default commentListSlice.reducer;

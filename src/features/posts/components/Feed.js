@@ -8,6 +8,9 @@ import { fetchPosts } from '../postsSlice/postListSlice';
 import { selectUser } from '../../user/userSlice/userSlice';
 import { fetchUserByToken } from '../../user/userSlice/userSlice';
 
+import { selectComments } from '../postsSlice/commentListSlice';
+import { fetchComments } from '../postsSlice/commentListSlice';
+
 import Header from './Header';
 import Posts from './Posts';
 import NewPost from './NewPost';
@@ -44,6 +47,10 @@ function Feed() {
 
   useEffect(() => {
     dispatch(fetchPosts(token));
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchComments());
   }, []);
 
   return (

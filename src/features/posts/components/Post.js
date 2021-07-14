@@ -1,17 +1,20 @@
 import styled from 'styled-components';
-import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 
 import {
   selectNewComments,
   selectNewComment,
 } from '../postsSlice/newCommentSlice';
+
 import {
   onTextChange,
   clearState,
   submitNewComment,
 } from '../postsSlice/newCommentSlice';
-import { useEffect } from 'react';
+
+import { selectComments } from '../postsSlice/commentListSlice';
 
 const Container = styled.article`
   border: 1px solid rgba(204, 204, 204, 0.3);
@@ -107,14 +110,18 @@ const PostCaption = styled.div`
 `;
 
 const Text = styled.p`
-  margin: 5px 0 5px 0;
+  margin: 5px 0 5px 5px;
   padding: 0;
-  font-size: 0.92rem;
+  font-size: inherit;
 `;
 
 const PostComments = styled.div``;
 
-const Comment = styled.div``;
+const Comment = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+`;
 
 const NewComment = styled.div`
   padding: 0.6em;
@@ -148,6 +155,16 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
   const newComments = useSelector(selectNewComments);
   const { isSuccess } = useSelector(selectNewComment);
 
+  const commentList = useSelector(selectComments)
+    .filter((comment) => comment.postId === id)
+    .map((comment) => ({
+      id: comment.id,
+      username: comment.user.username,
+      text: comment.text,
+    }));
+
+  console.log('commentList: ', commentList);
+
   const newCommentText = useSelector((state) => {
     const index = state.newComment.comments.findIndex(
       (comment) => comment.postId === id
@@ -160,7 +177,6 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
   });
 
   const handleOnChange = (e) => {
-    console.log('e.target.value: ', e.target.value);
     const values = {
       postId: id,
       commentText: e.target.value,
@@ -232,14 +248,16 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
           <Text>{caption}</Text>
         </PostCaption>
         <PostComments>
-          <Comment>
-            <Username>User1</Username>
-            <Text>This is user1 comment. Lorem ipsum dolor sit amet.</Text>
-          </Comment>
-          <Comment>
-            <Username>User2</Username>
-            <Text>This is user2 comment. Lorem ipsum dolor sit amet.</Text>
-          </Comment>
+          {commentList.length > 0
+            ? commentList.map((comment) => {
+                return (
+                  <Comment key={comment.id}>
+                    <Username>{comment.username}</Username>
+                    <Text>{comment.text}</Text>
+                  </Comment>
+                );
+              })
+            : null}
         </PostComments>
       </PostBody>
       <NewComment>
