@@ -23,7 +23,7 @@ const Container = styled.div`
   background-color: #fbfbfb;
   min-width: 320px;
   @media only screen and (max-width: 1024px) {
-    grid-template-columns: 1fr 614px 1fr;
+    grid-template-columns: 1fr auto 1fr;
   }
 
   @media only screen and (max-width: 632px) {

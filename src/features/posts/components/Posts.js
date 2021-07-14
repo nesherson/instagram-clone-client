@@ -5,6 +5,10 @@ import Post from './Post';
 const Container = styled.div`
   grid-column-start: 2;
   grid-column-end: 3;
+  @media only screen and (max-width: 664px) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
 `;
 
 const PostList = styled.ul`

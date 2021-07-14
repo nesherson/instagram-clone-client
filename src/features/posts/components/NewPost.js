@@ -19,10 +19,11 @@ const Container = styled.div`
   border-radius: 7px;
   padding: 10px;
   display: flex;
-  @media only screen and (max-width: 632px) {
+  @media only screen and (max-width: 664px) {
     grid-column-start: 1;
     grid-column-end: 4;
     padding: 10px 2%;
+    border-radius: 0;
   }
 `;
 
@@ -56,7 +57,7 @@ const Form = styled.form`
   flex-grow: 3;
   max-width: 506px;
   min-width: 506px;
-  @media only screen and (max-width: 632px) {
+  @media only screen and (max-width: 664px) {
     min-width: 320px;
     flex-grow: 4;
   }
@@ -81,7 +82,7 @@ const Input = styled.input`
     background-color: #f0f2f4;
   }
   transition: background-color 200ms ease;
-  @media only screen and (max-width: 632px) {
+  @media only screen and (max-width: 664px) {
     width: 80%;
   }
 `;
@@ -104,8 +105,10 @@ const Textarea = styled.textarea`
   }
   transition: background-color 200ms ease;
 
-  @media only screen and (max-width: 632px) {
-    min-width: 240px;
+  @media only screen and (max-width: 664px) {
+    min-width: 100%;
+    max-width: 100%;
+
     width: 100%;
   }
 `;

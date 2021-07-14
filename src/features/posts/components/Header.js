@@ -7,7 +7,6 @@ import DropdownMenu from './DropdownMenu';
 const MainContainer = styled.section`
   background-color: #fff;
   position: fixed;
-  z-index: 50;
   top: 0;
   width: 100%;
   height: 64px;
@@ -21,6 +20,9 @@ const Container = styled.div`
   align-items: center;
   height: 100%;
   margin: 0 15%;
+  @media only screen and (max-width: 664px) {
+    margin: 0 2%;
+  }
 `;
 
 const Headline = styled.h1`

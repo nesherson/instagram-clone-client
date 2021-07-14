@@ -18,6 +18,9 @@ const Container = styled.article`
   margin-top: 30px;
   border-radius: 7px;
   background-color: #fff;
+  @media only screen and (max-width: 664px) {
+    border-radius: 0;
+  }
 `;
 
 const PostHeader = styled.div`
@@ -115,7 +118,6 @@ const Comment = styled.div``;
 
 const NewComment = styled.div`
   padding: 0.6em;
-
   display: flex;
 `;
 
@@ -123,6 +125,9 @@ const Input = styled.input`
   border: none;
   outline: none;
   width: 90%;
+  @media only screen and (max-width: 464px) {
+    width: 85%;
+  }
 `;
 
 const Button = styled.button`
@@ -133,6 +138,9 @@ const Button = styled.button`
   background-color: ${(props) => (props.disabled ? '#bdcedb' : '#5b86a7')};
   color: #fff;
   width: 10%;
+  @media only screen and (max-width: 464px) {
+    width: 15%;
+  }
 `;
 
 function Post({ id, username, profileImg, postImg, likes, caption }) {
