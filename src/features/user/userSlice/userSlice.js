@@ -54,9 +54,10 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const fetchUserByToken = createAsyncThunk(
-  'user/fetchUserByToken',
-  async (token, thunkAPI) => {
+export const fetchUser = createAsyncThunk(
+  'user/fetchUser',
+  async (_, thunkAPI) => {
+    const token = localStorage.getItem('token');
     try {
       const response = await fetch('http://localhost:5000/auth/user', {
         method: 'POST',
@@ -81,10 +82,12 @@ export const fetchUserByToken = createAsyncThunk(
 );
 
 const initialState = {
+  id: null,
   email: '',
   fullname: '',
   username: '',
   profileImg: '',
+  posts: [],
   isFetching: false,
   isSuccess: false,
   isError: false,
@@ -99,9 +102,10 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
+      state.id = action.payload.user.id;
       state.email = action.payload.user.email;
-      state.fullname = action.payload.user.fullname;
       state.username = action.payload.user.username;
+      state.fullname = action.payload.user.fullname;
     },
     [signupUser.pending]: (state, action) => {
       state.isFetching = true;
@@ -116,8 +120,11 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
+      state.id = action.payload.user.id;
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
+      state.fullname = action.payload.user.fullname;
+
       return state;
     },
     [loginUser.pending]: (state, action) => {
@@ -129,19 +136,21 @@ const userSlice = createSlice({
       state.isError = true;
       state.errorMessage = action.payload.message;
     },
-    [fetchUserByToken.fulfilled]: (state, action) => {
+    [fetchUser.fulfilled]: (state, action) => {
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
+      state.id = action.payload.user.id;
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
       state.profileImg = action.payload.user.profileImg;
+      state.posts = action.payload.user.posts;
     },
-    [fetchUserByToken.pending]: (state, action) => {
+    [fetchUser.pending]: (state, action) => {
       state.isFetching = true;
     },
-    [fetchUserByToken.rejected]: (state, action) => {
+    [fetchUser.rejected]: (state, action) => {
       state.isFetching = false;
       state.isSuccess = false;
       state.isError = true;
