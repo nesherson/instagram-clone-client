@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchPosts = createAsyncThunk(
   'postList/fetchPosts',
-  async (token, thunkAPI) => {
+  async (_, thunkAPI) => {
+    const token = localStorage.getItem('token');
     try {
       const response = await fetch('http://localhost:5000/post/posts', {
         method: 'GET',

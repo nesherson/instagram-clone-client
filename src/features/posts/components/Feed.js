@@ -6,9 +6,8 @@ import { selectPosts } from '../postsSlice/postListSlice';
 import { fetchPosts } from '../postsSlice/postListSlice';
 
 import { selectUser } from '../../user/userSlice/userSlice';
-import { fetchUserByToken } from '../../user/userSlice/userSlice';
+import { fetchUser } from '../../user/userSlice/userSlice';
 
-import { selectComments } from '../postsSlice/commentListSlice';
 import { fetchComments } from '../postsSlice/commentListSlice';
 
 import Header from './Header';
@@ -39,14 +38,12 @@ function Feed() {
   const { username, fullname, profileImg } = useSelector(selectUser);
   const posts = useSelector(selectPosts);
 
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
-    dispatch(fetchUserByToken(token));
+    dispatch(fetchUser());
   }, []);
 
   useEffect(() => {
-    dispatch(fetchPosts(token));
+    dispatch(fetchPosts());
   }, []);
 
   useEffect(() => {
