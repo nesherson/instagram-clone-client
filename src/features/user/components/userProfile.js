@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Bookmark, Grid } from 'react-feather';
 
 import { selectUser } from '../userSlice/userSlice';
 
@@ -56,8 +57,42 @@ const Fullname = styled.h2`
 
 const SocialStats = styled.div``;
 
+const Selection = styled.div`
+  grid-column: 2 / 5;
+  grid-row: 2 / 3;
+  border-top: 1px solid rgba(185, 185, 185, 0.4);
+  display: flex;
+  justify-content: center;
+`;
+
+const ItemWrapper = styled(NavLink)`
+  margin-right: 30px;
+  margin-top: -1px;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  color: #737373;
+  box-sizing: border-box;
+  &.active {
+    border-top: 1px solid rgba(32, 32, 32, 0.6);
+    color: #404040;
+  }
+`;
+
+const SelectionItem = styled.span`
+  color: inherit;
+  box-sizing: border-box;
+`;
+
+const Icon = styled.div`
+  margin-right: 3px;
+`;
+
 function UserProfile() {
   const { profileImg, username, fullname } = useSelector(selectUser);
+
+  const { url } = useRouteMatch();
 
   return (
     <Container>
@@ -74,6 +109,20 @@ function UserProfile() {
           <Fullname>{fullname}</Fullname>
         </UserDetails>
       </ProfileHeader>
+      <Selection>
+        <ItemWrapper exact to={`${url}`}>
+          <Icon>
+            <Grid size={18} color='#737373' />
+          </Icon>
+          <SelectionItem>Posts</SelectionItem>
+        </ItemWrapper>
+        <ItemWrapper to={`${url}/saved`}>
+          <Icon>
+            <Bookmark size={18} color='#737373' />
+          </Icon>
+          <SelectionItem>Saved</SelectionItem>
+        </ItemWrapper>
+      </Selection>
     </Container>
   );
 }
