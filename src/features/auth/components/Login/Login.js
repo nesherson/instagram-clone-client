@@ -141,11 +141,9 @@ const Link = styled(NavLink)`
   color: #5b86a7;
 `;
 
-const LogIn = () => {
+const Login = () => {
   const emailValue = useSelector(selectEmail);
   const passwordValue = useSelector(selectPassword);
-
-  const user = useSelector(selectUser);
   const { isSuccess } = useSelector(selectUser);
 
   const history = useHistory();
@@ -173,13 +171,7 @@ const LogIn = () => {
       password: passwordValue,
     };
 
-    dispatch(loginUser(userData))
-      .then((res) => {
-        console.log('loginUser/res: ', res);
-      })
-      .catch((err) => {
-        console.log('loginUser/res: ', err);
-      });
+    dispatch(loginUser(userData));
 
     dispatch(clearInput());
   };
@@ -196,9 +188,6 @@ const LogIn = () => {
       history.push('/feed');
     }
   }, [isSuccess]);
-
-  console.log('user ', user);
-  console.log('isSuccess ', isSuccess);
 
   return (
     <Container>
@@ -238,4 +227,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default Login;

@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import signUpReducer from '../features/auth/authSlice/signUpSlice';
-import logInReducer from '../features/auth/authSlice/logInSlice';
+import signupReducer from '../features/auth/authSlice/signupSlice';
+import loginReducer from '../features/auth/authSlice/loginSlice';
 import userReducer from '../features/user/userSlice/userSlice';
 import newPostReducer from '../features/posts/postsSlice/newPostSlice';
 import postListReducer from '../features/posts/postsSlice/postListSlice';
@@ -10,8 +10,8 @@ import commentListSlice from '../features/posts/postsSlice/commentListSlice';
 
 export const store = configureStore({
   reducer: {
-    signUp: signUpReducer,
-    logIn: logInReducer,
+    signUp: signupReducer,
+    logIn: loginReducer,
     user: userReducer,
     newPost: newPostReducer,
     postList: postListReducer,

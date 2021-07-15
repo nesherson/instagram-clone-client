@@ -7,8 +7,8 @@ const initialState = {
   password: '',
 };
 
-export const signUpSlice = createSlice({
-  name: 'signUp',
+export const signupSlice = createSlice({
+  name: 'signup',
   initialState,
   reducers: {
     onEmailChange: (state, action) => {
@@ -26,16 +26,16 @@ export const signUpSlice = createSlice({
   },
 });
 
-export const selectEmail = (state) => state.signUp.email;
-export const selectFullname = (state) => state.signUp.fullname;
-export const selectUsername = (state) => state.signUp.username;
-export const selectPassword = (state) => state.signUp.password;
+export const selectEmail = (state) => state.signup.email;
+export const selectFullname = (state) => state.signup.fullname;
+export const selectUsername = (state) => state.signup.username;
+export const selectPassword = (state) => state.signup.password;
 
 export const {
   onEmailChange,
   onFullnameChange,
   onUsernameChange,
   onPasswordChange,
-} = signUpSlice.actions;
+} = signupSlice.actions;
 
-export default signUpSlice.reducer;
+export default signupSlice.reducer;

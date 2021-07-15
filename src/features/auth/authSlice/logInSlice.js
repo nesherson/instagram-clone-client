@@ -5,8 +5,8 @@ const initialState = {
   password: '',
 };
 
-export const logInSlice = createSlice({
-  name: 'logIn',
+export const loginSlice = createSlice({
+  name: 'login',
   initialState,
   reducers: {
     onEmailChange: (state, action) => {
@@ -22,10 +22,10 @@ export const logInSlice = createSlice({
   },
 });
 
-export const selectEmail = (state) => state.logIn.email;
-export const selectPassword = (state) => state.logIn.password;
+export const selectEmail = (state) => state.login.email;
+export const selectPassword = (state) => state.login.password;
 
 export const { onEmailChange, onPasswordChange, clearInput } =
-  logInSlice.actions;
+  loginSlice.actions;
 
-export default logInSlice.reducer;
+export default loginSlice.reducer;
