@@ -71,7 +71,7 @@ function DropdownMenu() {
 
   return (
     <Container>
-      <DropdownItem to={`/${username}`} icon={<User width={20} />}>
+      <DropdownItem to={`/profile/${username}`} icon={<User width={20} />}>
         Profile
       </DropdownItem>
       <DropdownItem to='#' icon={<Bookmark width={20} />}>
