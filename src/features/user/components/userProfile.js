@@ -2,10 +2,12 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Bookmark, Grid } from 'react-feather';
+import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 
 import { selectUser } from '../userSlice/userSlice';
 import { fetchUser } from '../userSlice/userSlice';
+
+import { fetchCommentsByPostId } from '../../posts/postsSlice/commentListSlice';
 
 import { selectPosts } from '../../posts/postsSlice/postListSlice';
 
@@ -13,7 +15,7 @@ import Header from '../../posts/components/Header';
 
 const Container = styled.section`
   padding-top: 94px;
-  height: 100%;
+  height: calc(100vh - 94px );
   display: grid;
   grid-template-columns: 1fr 324px 324px 324px 1fr;
   grid-template-rows: 200px 53px 294px auto;
@@ -91,6 +93,7 @@ const SelectionItem = styled.span`
 
 const Icon = styled.div`
   margin-right: 3px;
+  background-color: transparent;
 `;
 
 const PostsContainer = styled.section`
@@ -103,31 +106,39 @@ const PostsContainer = styled.section`
 const Post = styled.div`
   width: 294px;
   height: 294px;
-  &:hover {
-    opacity: 1;
+  position: relative;
+
+  &:hover div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, .3);
   }
+
 `;
 
 const PostImg = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: fill;
-  //opacity: 1;
-  transition: 0.5s ease;
-  &:hover {
-    opacity: 0.3;
-  }
+  object-fit: cover;
 `;
 
 const PostStats = styled.div`
-  transition: 0.5s ease;
-  opacity: 0;
-  position: relative;
+  position: absolute;
   top: 0;
   left: 0;
-  //transform: translate(-25%, -25%);
-  color: black;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  display: none;
+`;
+
+const Stats = styled.span`
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  width: 35px;
+  justify-content: space-evenly;
 `;
 
 function UserProfile() {
@@ -140,6 +151,8 @@ function UserProfile() {
     dispatch(fetchUser());
   }, [dispatch]);
 
+  
+
   return (
     <Container>
       <Header />
@@ -151,7 +164,7 @@ function UserProfile() {
         </UserImage>
         <UserDetails>
           <Username>{username}</Username>
-          <SocialStats>35 posts</SocialStats>
+          <SocialStats>{posts.length} posts</SocialStats>
           <Fullname>{fullname}</Fullname>
         </UserDetails>
       </ProfileHeader>
@@ -174,7 +187,16 @@ function UserProfile() {
           return (
             <Post key={post.id}>
               <PostImg src={post.imageUrl} />
-              <PostStats>Stats</PostStats>
+              <PostStats className='after'>
+                <Stats>
+                   <Heart size={20} color='#fff' fill='#fff'/>
+                   <span>{post.likes}</span>
+                </Stats>
+                <Stats>
+                  <MessageCircle size={20} color='#fff' fill='#fff'/>
+                  <span>{post.comments.length}</span>
+                </Stats>
+              </PostStats>
             </Post>
           );
         })}
