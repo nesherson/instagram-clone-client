@@ -75,6 +75,8 @@ const newCommentSlice = createSlice({
     },
     [submitNewComment.pending]: (state, action) => {
       state.isFetching = true;
+      state.isSuccess = false;
+      state.isError = false;
     },
     [submitNewComment.rejected]: (state, action) => {
       state.isFetching = false;
@@ -90,6 +92,8 @@ export const selectNewComments = (state) => {
 };
 
 export const selectNewComment = (state) => state.newComment;
+
+export const selectNewCommentPostSuccess = (state) => state.newComment.isSuccess;
 
 export const { onTextChange, clearState } = newCommentSlice.actions;
 

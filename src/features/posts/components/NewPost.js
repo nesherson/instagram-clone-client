@@ -150,13 +150,7 @@ function NewPost({ profileImg }) {
       imageUrl: imageUrl,
       caption: caption,
     };
-    dispatch(submitNewPost(values))
-      .then((res) => {
-        console.log('submitNewPost/res: ', res);
-      })
-      .catch((err) => {
-        console.log('submitNewPost/err: ', err);
-      });
+    dispatch(submitNewPost(values));
   };
 
   return (

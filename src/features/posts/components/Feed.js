@@ -10,14 +10,17 @@ import { fetchUser } from '../../user/userSlice/userSlice';
 
 import { fetchComments } from '../postsSlice/commentListSlice';
 
+import { selectNewPost } from '../postsSlice/newPostSlice';
+
 import Header from './Header';
 import Posts from './Posts';
 import NewPost from './NewPost';
 import UserDetails from './UserDetails';
+import { selectNewCommentPostSuccess } from '../postsSlice/newCommentSlice';
 
 const Container = styled.section`
   padding-top: 94px;
-  height: 100%;
+  height: calc(100vh - 94px );
   display: grid;
   grid-template-rows: 130px auto;
   grid-template-columns: 1fr 614px 322px 1fr;
@@ -36,6 +39,7 @@ const Container = styled.section`
 function Feed() {
   const dispatch = useDispatch();
   const { username, fullname, profileImg } = useSelector(selectUser);
+  const {newPostSubmitSuccess} = useSelector(selectNewPost);
   const posts = useSelector(selectPosts);
 
   useEffect(() => {
@@ -49,6 +53,10 @@ function Feed() {
   useEffect(() => {
     dispatch(fetchComments());
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, [newPostSubmitSuccess]);
 
   return (
     <Container>
