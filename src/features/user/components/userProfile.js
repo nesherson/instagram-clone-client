@@ -1,9 +1,13 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink, useRouteMatch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Bookmark, Grid } from 'react-feather';
 
 import { selectUser } from '../userSlice/userSlice';
+import { fetchUser } from '../userSlice/userSlice';
+
+import { selectPosts } from '../../posts/postsSlice/postListSlice';
 
 import Header from '../../posts/components/Header';
 
@@ -11,7 +15,7 @@ const Container = styled.section`
   padding-top: 94px;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr 294px 294px 294px 1fr;
+  grid-template-columns: 1fr 324px 324px 324px 1fr;
   grid-template-rows: 200px 53px 294px auto;
   background-color: #fbfbfb;
 `;
@@ -42,7 +46,7 @@ const ProfileImg = styled.img`
   height: auto;
 `;
 
-const UserDetails = styled.div`
+const UserDetails = styled.section`
   flex-grow: 6;
 `;
 
@@ -89,10 +93,52 @@ const Icon = styled.div`
   margin-right: 3px;
 `;
 
-function UserProfile() {
-  const { profileImg, username, fullname } = useSelector(selectUser);
+const PostsContainer = styled.section`
+  grid-column: 2 / 5;
+  grid-row: 3 / 4;
+  display: flex;
+  justify-content: space-evenly;
+`;
 
+const Post = styled.div`
+  width: 294px;
+  height: 294px;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const PostImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  //opacity: 1;
+  transition: 0.5s ease;
+  &:hover {
+    opacity: 0.3;
+  }
+`;
+
+const PostStats = styled.div`
+  transition: 0.5s ease;
+  opacity: 0;
+  position: relative;
+  top: 0;
+  left: 0;
+  //transform: translate(-25%, -25%);
+  color: black;
+  text-align: center;
+`;
+
+function UserProfile() {
+  const { id, profileImg, username, fullname, posts } = useSelector(selectUser);
+
+  const dispatch = useDispatch();
   const { url } = useRouteMatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -123,6 +169,16 @@ function UserProfile() {
           <SelectionItem>Saved</SelectionItem>
         </ItemWrapper>
       </Selection>
+      <PostsContainer>
+        {posts.map((post) => {
+          return (
+            <Post key={post.id}>
+              <PostImg src={post.imageUrl} />
+              <PostStats>Stats</PostStats>
+            </Post>
+          );
+        })}
+      </PostsContainer>
     </Container>
   );
 }
