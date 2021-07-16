@@ -7,25 +7,35 @@ import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 import { selectUser } from '../userSlice/userSlice';
 import { fetchUser } from '../userSlice/userSlice';
 
-import { fetchCommentsByPostId } from '../../posts/postsSlice/commentListSlice';
-
-import { selectPosts } from '../../posts/postsSlice/postListSlice';
-
 import Header from '../../posts/components/Header';
 
+
 const Container = styled.section`
-  padding-top: 94px;
-  height: calc(100vh - 94px );
+  margin-top: 64px;
+  height: calc(100vh - 94px);
   display: grid;
-  grid-template-columns: 1fr 324px 324px 324px 1fr;
-  grid-template-rows: 200px 53px 294px auto;
+  grid-template-columns: 1fr 294px 294px 294px 1fr;
+  grid-template-rows: 170px 53px auto;
   background-color: #fbfbfb;
+  padding: 10px 25px 10px 25px;
+  @media only screen and (max-width: 1024px) {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  @media only screen and (max-width: 716px) {
+    padding: 10px 0 10px 0;
+    grid-template-rows: 145px 53px auto;
+
+  }
 `;
 
 const ProfileHeader = styled.header`
   grid-column: 2 / 5;
   grid-row: 1 / 2;
   display: flex;
+  @media only screen and (max-width: 1024px) {
+    grid-column: 2 / 3;
+  }
 `;
 
 const UserImage = styled.div`
@@ -36,11 +46,15 @@ const UserImage = styled.div`
 
 const ImageWrapper = styled.div`
   position: relative;
-  width: 136px;
-  height: 136px;
+  width: 126px;
+  height: 126px;
   overflow: hidden;
   border-radius: 50%;
   border: 2px solid rgba(204, 204, 204, 0.3);
+  @media only screen and (max-width: 716px) {
+    width: 76px;
+    height: 76px;
+  }
 `;
 
 const ProfileImg = styled.img`
@@ -54,14 +68,18 @@ const UserDetails = styled.section`
 
 const Username = styled.h2`
   font-weight: 300;
+  font-size: 1.45rem;
 `;
 
 const Fullname = styled.h2`
   font-weight: 500;
-  font-size: 1.2rem;
+  font-size: 1.02rem;
 `;
 
-const SocialStats = styled.div``;
+const SocialStats = styled.h3`
+  font-size: 0.9rem;
+  font-weight: 300;
+`;
 
 const Selection = styled.div`
   grid-column: 2 / 5;
@@ -69,6 +87,9 @@ const Selection = styled.div`
   border-top: 1px solid rgba(185, 185, 185, 0.4);
   display: flex;
   justify-content: center;
+  @media only screen and (max-width: 1024px) {
+    grid-column: 2 / 3;
+  }
 `;
 
 const ItemWrapper = styled(NavLink)`
@@ -80,6 +101,7 @@ const ItemWrapper = styled(NavLink)`
   align-items: center;
   color: #737373;
   box-sizing: border-box;
+  font-size: 0.90rem;
   &.active {
     border-top: 1px solid rgba(32, 32, 32, 0.6);
     color: #404040;
@@ -88,24 +110,27 @@ const ItemWrapper = styled(NavLink)`
 
 const SelectionItem = styled.span`
   color: inherit;
-  box-sizing: border-box;
 `;
 
-const Icon = styled.div`
+const ItemIcon = styled.div`
   margin-right: 3px;
-  background-color: transparent;
+  color: #737373;
+  width: 22px;
+  height: auto;
 `;
 
 const PostsContainer = styled.section`
   grid-column: 2 / 5;
-  grid-row: 3 / 4;
+  height: 80%;
   display: flex;
-  justify-content: space-evenly;
+
+  @media only screen and (max-width: 1024px) {
+    grid-column: 2 / 3;
+  }
 `;
 
 const Post = styled.div`
-  width: 294px;
-  height: 294px;
+  margin: 10px;
   position: relative;
 
   &:hover div {
@@ -115,6 +140,9 @@ const Post = styled.div`
     background: rgba(0, 0, 0, .3);
   }
 
+  @media only screen and (max-width: 716px) {
+    margin: 5px;
+    }
 `;
 
 const PostImg = styled.img`
@@ -134,7 +162,7 @@ const PostStats = styled.div`
 `;
 
 const Stats = styled.span`
-  margin-right: 20px;
+  margin-right: 3%;
   display: flex;
   align-items: center;
   width: 35px;
@@ -151,11 +179,11 @@ function UserProfile() {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  
-
   return (
-    <Container>
+    <>
       <Header />
+
+    <Container>
       <ProfileHeader>
         <UserImage>
           <ImageWrapper>
@@ -170,15 +198,15 @@ function UserProfile() {
       </ProfileHeader>
       <Selection>
         <ItemWrapper exact to={`${url}`}>
-          <Icon>
-            <Grid size={18} color='#737373' />
-          </Icon>
+          <ItemIcon>
+            <Grid size='100%' viewBox='0 0 24 24'/>
+          </ItemIcon>
           <SelectionItem>Posts</SelectionItem>
         </ItemWrapper>
         <ItemWrapper to={`${url}/saved`}>
-          <Icon>
-            <Bookmark size={18} color='#737373' />
-          </Icon>
+          <ItemIcon>
+            <Bookmark size='100%' viewBox='0 0 24 24'/>
+          </ItemIcon>
           <SelectionItem>Saved</SelectionItem>
         </ItemWrapper>
       </Selection>
@@ -202,6 +230,7 @@ function UserProfile() {
         })}
       </PostsContainer>
     </Container>
+    </>
   );
 }
 
