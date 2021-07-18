@@ -19,7 +19,7 @@ const Container = styled.section`
   background-color: #fbfbfb;
   padding: 10px 25px 10px 25px;
   @media only screen and (max-width: 1024px) {
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 85% 1fr;
   }
 
   @media only screen and (max-width: 716px) {
@@ -88,7 +88,7 @@ const Selection = styled.div`
   display: flex;
   justify-content: center;
   @media only screen and (max-width: 1024px) {
-    grid-column: 2 / 3;
+    grid-column: 1 / 4;
   }
 `;
 
