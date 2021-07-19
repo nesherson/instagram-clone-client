@@ -7,8 +7,8 @@ import {
   onEmailChange,
   onPasswordChange,
   clearInput,
-} from '../../authSlice/logInSlice';
-import { selectEmail, selectPassword } from '../../authSlice/logInSlice';
+} from '../../authSlice/loginSlice';
+import { selectEmail, selectPassword } from '../../authSlice/loginSlice';
 
 import { selectUser } from '../../../user/userSlice/userSlice';
 
@@ -27,6 +27,10 @@ const Container = styled.div`
     0 1.3px 5.3px rgba(0, 0, 0, 0.028), 0 2.4px 10px rgba(0, 0, 0, 0.035),
     0 4.2px 17.9px rgba(0, 0, 0, 0.042), 0 7.9px 33.4px rgba(0, 0, 0, 0.05),
     0 19px 80px rgba(0, 0, 0, 0.07);
+
+  @media only screen and (max-width: 1599px) {
+    margin: 50px auto 0 auto; 
+  }
 
   @media only screen and (max-width: 1024px) {
     width: 100%;
@@ -176,18 +180,24 @@ const Login = () => {
     dispatch(clearInput());
   };
 
-  useEffect(() => {
-    let token = localStorage.getItem('token');
-    if (token) {
-      history.push('/feed');
-    }
-  }, []);
+  // useEffect(() => {
+  //   let token = JSON.parse(localStorage.getItem('userData'));
+  //   if (token) {
+  //     history.push('/feed');
+  //   console.log('useEff/noDepen: ');
+
+  //   };
+  // }, [history]); 
 
   useEffect(() => {
     if (isSuccess) {
       history.push('/feed');
+    console.log('useEff/isSuccess: ');
+
     }
-  }, [isSuccess]);
+  }, [history, isSuccess]);
+
+  console.log(isSuccess);
 
   return (
     <Container>
