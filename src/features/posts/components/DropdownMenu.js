@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { User, Bookmark, Settings } from 'react-feather';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUser } from '../../user/userSlice/userSlice';
+import { logoutUser } from '../../user/userSlice/userSlice';
 
 const Container = styled.div`
   position: absolute;
@@ -21,6 +22,22 @@ const Container = styled.div`
 `;
 
 const MenuItem = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  border-radius: 7px;
+  transition: background 500ms;
+  padding: 0.5rem;
+  margin: 0.6rem;
+  color: #404040;
+  text-decoration: none;
+  height: calc(64px * 0.55);
+
+  &:hover {
+    background-color: #cccccc;
+  }
+`;
+
+const Item = styled.span`
   display: flex;
   align-items: center;
   border-radius: 7px;
@@ -58,6 +75,18 @@ const Divider = styled.span`
 `;
 
 function DropdownMenu() {
+
+  const { username } = useSelector(selectUser);
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    history.push('/');
+  };
+
+
   function DropdownItem(props) {
     return (
       <MenuItem to={props.to}>
@@ -67,7 +96,7 @@ function DropdownMenu() {
     );
   }
 
-  const { username } = useSelector(selectUser);
+ 
 
   return (
     <Container>
@@ -81,7 +110,7 @@ function DropdownMenu() {
         Settings
       </DropdownItem>
       <Divider />
-      <DropdownItem to='#'>Log out</DropdownItem>
+      <Item onClick={handleLogout} >Log out</Item>
     </Container>
   );
 }

@@ -16,7 +16,15 @@ export const signupUser = createAsyncThunk(
       let data = await response.json();
 
       if (response.status === 200) {
-        localStorage.setItem('token', data.token);
+        const exp = 3600000;
+        const tokenExpirationDate = new Date(new Date().getTime() + exp);
+        const userData = JSON.stringify({
+          userId: data.user.id,
+          token: data.token,
+          tokenExpirationDate: tokenExpirationDate.toISOString()
+        });
+
+        localStorage.setItem('userData', userData);
         return data;
       } else {
         return thunkAPI.rejectWithValue(data);
@@ -28,7 +36,7 @@ export const signupUser = createAsyncThunk(
 );
 
 export const loginUser = createAsyncThunk(
-  'user/signupUser',
+  'user/loginUser',
   async ({ email, password }, thunkAPI) => {
     try {
       const response = await fetch('http://localhost:5000/auth/login', {
@@ -43,7 +51,15 @@ export const loginUser = createAsyncThunk(
       let data = await response.json();
 
       if (response.status === 200) {
-        localStorage.setItem('token', data.token);
+        const exp = 3600000;
+        const tokenExpirationDate = new Date(new Date().getTime() + exp);
+        const userData = JSON.stringify({
+          userId: data.user.id,
+          token: data.token,
+          tokenExpirationDate: tokenExpirationDate.toISOString()
+        });
+
+        localStorage.setItem('userData', userData);
         return data;
       } else {
         return thunkAPI.rejectWithValue(data);
@@ -57,7 +73,7 @@ export const loginUser = createAsyncThunk(
 export const fetchUser = createAsyncThunk(
   'user/fetchUser',
   async (_, thunkAPI) => {
-    const token = localStorage.getItem('token');
+    const {token} = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch('http://localhost:5000/auth/user', {
         method: 'POST',
@@ -88,6 +104,7 @@ const initialState = {
   username: '',
   profileImg: '',
   posts: [],
+  isLoggedIn: false,
   isFetching: false,
   isSuccess: false,
   isError: false,
@@ -97,6 +114,19 @@ const initialState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
+  reducers: {
+    logoutUser: (state, action) => {
+      localStorage.removeItem('userData');
+      state.id = null;
+      state.email = '';
+      state.fullname = '';
+      state.username = '';
+      state.profileImg = '';
+      state.posts = [];
+      state.isLoggedIn = false;
+      state.isSuccess = false;
+    }
+  },
   extraReducers: {
     [signupUser.fulfilled]: (state, action) => {
       state.isFetching = false;
@@ -106,9 +136,13 @@ const userSlice = createSlice({
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
+      state.isLoggedIn = true;
+
     },
     [signupUser.pending]: (state, action) => {
       state.isFetching = true;
+      state.isSuccess = false;
+      state.isError = false;
     },
     [signupUser.rejected]: (state, action) => {
       state.isFetching = false;
@@ -124,11 +158,12 @@ const userSlice = createSlice({
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
-
-      return state;
+      state.isLoggedIn = true;
     },
     [loginUser.pending]: (state, action) => {
       state.isFetching = true;
+      state.isSuccess = false;
+      state.isError = false;
     },
     [loginUser.rejected]: (state, action) => {
       state.isFetching = false;
@@ -160,5 +195,7 @@ const userSlice = createSlice({
 });
 
 export const selectUser = (state) => state.user;
+
+export const {logoutUser} = userSlice.actions;
 
 export default userSlice.reducer;
