@@ -6,6 +6,7 @@ import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 import {
   selectNewComments,
   selectNewComment,
+  selectNewCommentPostSuccess
 } from '../postsSlice/newCommentSlice';
 
 import {
@@ -14,9 +15,12 @@ import {
   submitNewComment,
 } from '../postsSlice/newCommentSlice';
 
-import { selectComments } from '../postsSlice/commentListSlice';
+import { fetchComments, selectComments } from '../postsSlice/commentListSlice';
 
 import { likePost } from '../postsSlice/postListSlice';
+
+import { selectUser } from '../../user/userSlice/userSlice';
+import { savePost } from '../../user/userSlice/userSlice'
 
 const Container = styled.article`
   border: 1px solid rgba(204, 204, 204, 0.3);
@@ -153,9 +157,11 @@ const Button = styled.button`
 `;
 
 function Post({ id, username, profileImg, postImg, likes, caption }) {
+
   const dispatch = useDispatch();
   const newComments = useSelector(selectNewComments);
-  const { isSuccess } = useSelector(selectNewComment);
+  const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
+  const { userId } = useSelector(selectUser);
 
   const commentList = useSelector(selectComments)
     .filter((comment) => comment.postId === id)
@@ -164,8 +170,6 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
       username: comment.user.username,
       text: comment.text,
     }));
-
-  console.log('commentList: ', commentList);
 
   const newCommentText = useSelector((state) => {
     const index = state.newComment.comments.findIndex(
@@ -201,6 +205,14 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
     dispatch(likePost(id));
   };
 
+  const handleBookmark = () => {
+    const values = {
+      userId: userId,
+      postId: id
+    };
+    dispatch(savePost(values));
+  };
+
   const isInputEmpty = () => {
     const index = newComments.findIndex((comment) => comment.postId === id);
     if (index === -1) {
@@ -212,7 +224,8 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
 
   useEffect(() => {
     dispatch(clearState());
-  }, [dispatch, isSuccess]);
+    dispatch(fetchComments());
+  }, [dispatch, newCommentPostSuccess]);
 
   return (
     <Container>
@@ -244,7 +257,7 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
               <MessageCircle size={30} strokeWidth={1.3} />
             </IconLeft>
           </IconsWrapper>
-          <Icon>
+          <Icon onClick={handleBookmark}>
             <Bookmark size={30} strokeWidth={1.3} />
           </Icon>
         </Social>

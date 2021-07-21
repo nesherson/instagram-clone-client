@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { getLocalDateWithOffset } from '../../../util/date';
+
 export const signupUser = createAsyncThunk(
   'user/signupUser',
   async ({ email, fullname, username, password }, thunkAPI) => {
@@ -16,8 +18,8 @@ export const signupUser = createAsyncThunk(
       let data = await response.json();
 
       if (response.status === 200) {
-        const exp = 3600000;
-        const tokenExpirationDate = new Date(new Date().getTime() + exp);
+        const expirationTime = 3600000;
+        const tokenExpirationDate = new Date(getLocalDateWithOffset().getTime() + expirationTime);
         const userData = JSON.stringify({
           userId: data.user.id,
           token: data.token,
@@ -50,9 +52,9 @@ export const loginUser = createAsyncThunk(
 
       let data = await response.json();
 
-      if (response.status === 200) {
-        const exp = 3600000;
-        const tokenExpirationDate = new Date(new Date().getTime() + exp);
+      if (response.status === 200) { 
+        const expirationTime = 3600000;
+        const tokenExpirationDate = new Date(getLocalDateWithOffset().getTime() + expirationTime);
         const userData = JSON.stringify({
           userId: data.user.id,
           token: data.token,
@@ -75,8 +77,8 @@ export const fetchUser = createAsyncThunk(
   async (_, thunkAPI) => {
     const {token} = JSON.parse(localStorage.getItem('userData'));
     try {
-      const response = await fetch('http://localhost:5000/auth/user', {
-        method: 'POST',
+      const response = await fetch('http://localhost:5000/users/', {
+        method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -97,8 +99,36 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
+export const savePost = createAsyncThunk(
+  'user/savePost',
+  async ({userId, postId}, thunkAPI) => {
+    const {token} = JSON.parse(localStorage.getItem('userData'));
+    try {
+      const response = await fetch(`http://localhost:5000/users/user/${userId}/save-post`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+        body: JSON.stringify({postId})
+      });
+
+      let data = await response.json();
+
+      if (response.status === 200) {
+        return data;
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const initialState = {
-  id: null,
+  userId: null,
   email: '',
   fullname: '',
   username: '',
@@ -117,7 +147,7 @@ const userSlice = createSlice({
   reducers: {
     logoutUser: (state, action) => {
       localStorage.removeItem('userData');
-      state.id = null;
+      state.userId = null;
       state.email = '';
       state.fullname = '';
       state.username = '';
@@ -132,7 +162,7 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
-      state.id = action.payload.user.id;
+      state.userId = action.payload.user.id;
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
@@ -154,7 +184,7 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
-      state.id = action.payload.user.id;
+      state.userId = action.payload.user.id;
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
@@ -175,7 +205,7 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
-      state.id = action.payload.user.id;
+      state.userId = action.payload.user.id;
       state.email = action.payload.user.email;
       state.username = action.payload.user.username;
       state.fullname = action.payload.user.fullname;
@@ -184,8 +214,26 @@ const userSlice = createSlice({
     },
     [fetchUser.pending]: (state, action) => {
       state.isFetching = true;
+      state.isSuccess = false;
+      state.isError = false
     },
     [fetchUser.rejected]: (state, action) => {
+      state.isFetching = false;
+      state.isSuccess = false;
+      state.isError = true;
+      state.errorMessage = action.payload.message;
+    },
+    [savePost.fulfilled]: (state, action) => {
+      state.isFetching = false;
+      state.isSuccess = true;
+      state.isError = false;
+    },
+    [savePost.pending]: (state, action) => {
+      state.isFetching = true;
+      state.isSuccess = false;
+      state.isError = false
+    },
+    [savePost.rejected]: (state, action) => {
       state.isFetching = false;
       state.isSuccess = false;
       state.isError = true;
