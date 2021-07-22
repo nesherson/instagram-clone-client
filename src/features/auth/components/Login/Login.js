@@ -180,24 +180,12 @@ const Login = () => {
     dispatch(clearInput());
   };
 
-  // useEffect(() => {
-  //   let token = JSON.parse(localStorage.getItem('userData'));
-  //   if (token) {
-  //     history.push('/feed');
-  //   console.log('useEff/noDepen: ');
-
-  //   };
-  // }, [history]); 
-
   useEffect(() => {
     if (isSuccess) {
-      history.push('/feed');
-    console.log('useEff/isSuccess: ');
-
+      history.push('/feed');  
     }
   }, [history, isSuccess]);
 
-  console.log(isSuccess);
 
   return (
     <Container>
