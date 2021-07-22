@@ -8,8 +8,6 @@ import { fetchPosts } from '../postsSlice/postListSlice';
 import { selectUser } from '../../user/userSlice/userSlice';
 import { fetchUser } from '../../user/userSlice/userSlice';
 
-import { fetchComments } from '../postsSlice/commentListSlice';
-
 import { selectNewPost } from '../postsSlice/newPostSlice';
 
 import Header from './Header';
@@ -44,19 +42,15 @@ function Feed() {
 
   useEffect(() => {
     dispatch(fetchUser());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchPosts());
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchComments());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchPosts());
-  }, [newPostSubmitSuccess]);
+  }, [dispatch, newPostSubmitSuccess]);
 
   return (
     <Container>
