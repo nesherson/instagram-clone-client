@@ -4,7 +4,8 @@ export const submitNewPost = createAsyncThunk(
   'newPost/submitNewPost',
   async ({ imageUrl, caption }, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
+      const {token} = JSON.parse(localStorage.getItem('userData'));
+
       const response = await fetch('http://localhost:5000/post/add-post', {
         method: 'POST',
         headers: {
@@ -31,10 +32,10 @@ export const submitNewPost = createAsyncThunk(
 const initialState = {
   imageUrl: '',
   caption: '',
-  isFetching: false,
-  isSuccess: false,
-  isError: false,
-  errorMessage: '',
+  isSubmittingNewPost: false,
+  newPostSubmitSuccess: false,
+  newPostSubmitErr: false,
+  newPostSubmitErrMsg: '',
 };
 
 const newPostSlice = createSlice({
@@ -50,18 +51,20 @@ const newPostSlice = createSlice({
   },
   extraReducers: {
     [submitNewPost.fulfilled]: (state, action) => {
-      state.isFetching = false;
-      state.isSuccess = true;
-      state.isError = false;
+      state.isSubmittingNewPost = false;
+      state.newPostSubmitSuccess = true;
+      state.newPostSubmitErr = false;
     },
     [submitNewPost.pending]: (state, action) => {
-      state.isFetching = true;
+      state.isSubmittingNewPost = true;   
+      state.newPostSubmitSuccess = false;
+      state.newPostSubmitErr = false;
     },
     [submitNewPost.rejected]: (state, action) => {
-      state.isFetching = false;
-      state.isSuccess = false;
-      state.isError = true;
-      state.errorMessage = action.payload.message;
+      state.isSubmittingNewPost = false;
+      state.newPostSubmitSuccess = false;
+      state.newPostSubmitErr = true;
+      state.newPostSubmitErrMsg = action.payload.message;
     },
   },
 });

@@ -4,7 +4,8 @@ export const submitNewComment = createAsyncThunk(
   'newComment/submitNewComment',
   async ({ postId, commentText }, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
+      const {token} = JSON.parse(localStorage.getItem('userData'));
+
       const response = await fetch(
         `http://localhost:5000/post/${postId}/add-comment`,
         {
