@@ -17,7 +17,7 @@ import {
 
 import { fetchComments, selectComments } from '../postsSlice/commentListSlice';
 
-import { likePost } from '../postsSlice/postListSlice';
+import { likePost, selectLikes, fetchLikes, selectLikePostSuccess } from '../postsSlice/likeListSlice';
 
 import { selectUser } from '../../user/userSlice/userSlice';
 import { savePost } from '../../user/userSlice/userSlice'
@@ -156,12 +156,16 @@ const Button = styled.button`
   }
 `;
 
-function Post({ id, username, profileImg, postImg, likes, caption }) {
+function Post({ id, username, profileImg, postImg, caption }) {
 
   const dispatch = useDispatch();
+
   const newComments = useSelector(selectNewComments);
   const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
+
   const { userId } = useSelector(selectUser);
+
+  const likePostSuccess = useSelector(selectLikePostSuccess);
 
   const commentList = useSelector(selectComments)
     .filter((comment) => comment.postId === id)
@@ -169,6 +173,13 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
       id: comment.id,
       username: comment.user.username,
       text: comment.text,
+    }));
+
+    const likes = useSelector(selectLikes)
+    .filter((like) => like.postId === id)
+    .map((like) => ({
+      id: like.id,
+      userId: like.userId
     }));
 
   const newCommentText = useSelector((state) => {
@@ -227,6 +238,10 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
     dispatch(fetchComments());
   }, [dispatch, newCommentPostSuccess]);
 
+  useEffect(() => {
+    dispatch(fetchLikes());
+  }, [dispatch, likePostSuccess]);
+
   return (
     <Container>
       <PostHeader>
@@ -261,7 +276,7 @@ function Post({ id, username, profileImg, postImg, likes, caption }) {
             <Bookmark size={30} strokeWidth={1.3} />
           </Icon>
         </Social>
-        <Likes>{likes} likes</Likes>
+        <Likes>{likes.length} likes</Likes>
         <PostCaption>
           <Username>{username}</Username>
           <Text>{caption}</Text>

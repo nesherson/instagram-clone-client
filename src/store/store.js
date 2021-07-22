@@ -7,15 +7,17 @@ import newPostReducer from '../features/posts/postsSlice/newPostSlice';
 import postListReducer from '../features/posts/postsSlice/postListSlice';
 import newCommentReducer from '../features/posts/postsSlice/newCommentSlice';
 import commentListSlice from '../features/posts/postsSlice/commentListSlice';
+import likeListSlice from '../features/posts/postsSlice/likeListSlice'
 
 export const store = configureStore({
   reducer: {
-    signUp: signupReducer,
-    logIn: loginReducer,
+    signup: signupReducer,
+    login: loginReducer,
     user: userReducer,
     newPost: newPostReducer,
     postList: postListReducer,
     newComment: newCommentReducer,
     commentList: commentListSlice,
+    likeList: likeListSlice
   },
 });
