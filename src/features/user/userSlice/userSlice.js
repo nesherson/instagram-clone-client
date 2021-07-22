@@ -77,7 +77,7 @@ export const fetchUser = createAsyncThunk(
   async (_, thunkAPI) => {
     const {token} = JSON.parse(localStorage.getItem('userData'));
     try {
-      const response = await fetch('http://localhost:5000/users/', {
+      const response = await fetch('http://localhost:5000/users/user', {
         method: 'GET',
         headers: {
           Accept: 'application/json',
