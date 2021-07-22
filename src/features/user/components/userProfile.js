@@ -52,7 +52,9 @@ const ImageWrapper = styled.div`
   height: 126px;
   overflow: hidden;
   border-radius: 50%;
-  border: 2px solid rgba(204, 204, 204, 0.3);
+  background-color: #e7e7e7;
+  border: 1px solid rgba(204, 204, 204, 0.3);
+
   @media only screen and (max-width: 716px) {
     width: 76px;
     height: 76px;

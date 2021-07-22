@@ -44,6 +44,9 @@ const ImageWrapper = styled.div`
   height: 64px;
   overflow: hidden;
   border-radius: 50%;
+  background-color: #e7e7e7;
+  border: 1px solid rgba(185,185,185,0.4);
+
 `;
 
 const Img = styled.img`
