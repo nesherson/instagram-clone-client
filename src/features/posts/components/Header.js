@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Home, Compass, User } from 'react-feather';
 
 import NavItem from './NavItem';
-import DropdownMenu from './DropdownMenu';
+import NavDropdownMenu from './NavDropdownMenu';
 
 const MainContainer = styled.section`
   background-color: #fff;
@@ -50,10 +50,10 @@ function Header() {
           <Headline>Instaclone</Headline>
         </LogoWrapper>
         <Nav>
-          <NavItem icon={<Home width={22} />} to='/' />
+          <NavItem icon={<Home width={22} />} to='/feed' />
           <NavItem icon={<Compass width={22} />} to='/explore' />
           <NavItem icon={<User width={22} />} to='#'>
-            <DropdownMenu />
+            <NavDropdownMenu />
           </NavItem>
         </Nav>
       </Container>
