@@ -7,13 +7,13 @@ import {
   onFullnameChange,
   onUsernameChange,
   onPasswordChange,
-} from '../../authSlice/signUpSlice';
+} from '../../authSlice/signupSlice';
 import {
   selectEmail,
   selectFullname,
   selectUsername,
   selectPassword,
-} from '../../authSlice/signUpSlice';
+} from '../../authSlice/signupSlice';
 
 import { signupUser } from '../../../user/userSlice/userSlice';
 
@@ -30,6 +30,11 @@ const Container = styled.div`
     0 1.3px 5.3px rgba(0, 0, 0, 0.028), 0 2.4px 10px rgba(0, 0, 0, 0.035),
     0 4.2px 17.9px rgba(0, 0, 0, 0.042), 0 7.9px 33.4px rgba(0, 0, 0, 0.05),
     0 19px 80px rgba(0, 0, 0, 0.07);
+
+    
+  @media only screen and (max-width: 1599px) {
+    margin: 50px auto 0 auto; 
+  }
 
   @media only screen and (max-width: 1024px) {
     width: 100%;
