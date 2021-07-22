@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { NavLink, useRouteMatch } from 'react-router-dom';
+import { Route, NavLink, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 
 import { selectUser } from '../userSlice/userSlice';
 import { fetchUser } from '../userSlice/userSlice';
+
+import { selectSavedPosts, fetchSavedPosts } from '../../posts/postsSlice/savedPostListSlice'
 
 import Header from '../../posts/components/Header';
 
@@ -170,19 +172,24 @@ const Stats = styled.span`
 `;
 
 function UserProfile() {
-  const { id, profileImg, username, fullname, posts } = useSelector(selectUser);
+  const { userId, profileImg, username, fullname, posts } = useSelector(selectUser);
+  const savedPosts = useSelector(selectSavedPosts);
 
   const dispatch = useDispatch();
   const { url } = useRouteMatch();
 
   useEffect(() => {
+    dispatch(fetchSavedPosts(userId));
     dispatch(fetchUser());
+  }, [dispatch]);
+
+  useEffect(() => {
+   
   }, [dispatch]);
 
   return (
     <>
       <Header />
-
     <Container>
       <ProfileHeader>
         <UserImage>
@@ -211,6 +218,7 @@ function UserProfile() {
         </ItemWrapper>
       </Selection>
       <PostsContainer>
+        <Route exact path={`${url}`}>
         {posts.map((post) => {
           return (
             <Post key={post.id}>
@@ -228,6 +236,26 @@ function UserProfile() {
             </Post>
           );
         })}
+        </Route>
+        <Route path={`${url}/saved`}>
+        {savedPosts.map((savedPost) => {
+          return (
+            <Post key={savedPost.id}>
+              <PostImg src={savedPost.post.imageUrl} />
+              <PostStats className='after'>
+                <Stats>
+                   <Heart size={20} color='#fff' fill='#fff'/>
+                   <span>{savedPost.post.likes.length}</span>
+                </Stats>
+                <Stats>
+                  <MessageCircle size={20} color='#fff' fill='#fff'/>
+                  <span>{savedPost.post.comments.length}</span>
+                </Stats>
+              </PostStats>
+            </Post>
+          );
+        })}
+        </Route>
       </PostsContainer>
     </Container>
     </>
