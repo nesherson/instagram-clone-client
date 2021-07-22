@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 
@@ -22,8 +23,10 @@ import { likePost, selectLikes, fetchLikes, selectLikePostSuccess } from '../pos
 import { selectUser } from '../../user/userSlice/userSlice';
 import { savePost } from '../../user/userSlice/userSlice'
 
+import Modal from '../../../components/modal/Modal';
+
 const Container = styled.article`
-  border: 1px solid rgba(204, 204, 204, 0.3);
+  border: 1px solid rgba(185,185,185,0.4);
   margin-top: 30px;
   border-radius: 7px;
   background-color: #fff;
@@ -34,7 +37,7 @@ const Container = styled.article`
 
 const PostHeader = styled.div`
   height: 60px;
-  border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+  border-bottom: 1px solid rgba(185,185,185,0.4);
   padding: 5px 20px;
   display: flex;
   align-items: center;
@@ -53,7 +56,8 @@ const ImageWrapper = styled.div`
   height: 38px;
   overflow: hidden;
   border-radius: 50%;
-  border: 3px solid rgba(204, 204, 204, 0.3);
+  background-color: #e7e7e7;
+  border: 1px solid rgba(185,185,185,0.4);
 `;
 
 const ProfileImg = styled.img`
@@ -92,7 +96,7 @@ const PostImg = styled.img`
 
 const PostBody = styled.div`
   padding: 0.6em;
-  border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+  border-bottom: 1px solid rgba(185,185,185,0.4);
 `;
 
 const Social = styled.div`
@@ -156,7 +160,30 @@ const Button = styled.button`
   }
 `;
 
+const PostOptions = styled.section`
+  display: flex;
+  flex-direction: column;
+`;
+
+const OptionButton = styled.button`
+  border: none;
+  border-bottom: 1px solid rgba(185,185,185,0.4);
+  padding: 15px 0;
+  background-color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+`;
+
+const Link = styled(NavLink)`
+  text-decoration: none;
+  color: #000;
+`;
+
+
+
 function Post({ id, username, profileImg, postImg, caption }) {
+
+  const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -192,6 +219,14 @@ function Post({ id, username, profileImg, postImg, caption }) {
       return '';
     }
   });
+
+  const handleModalOnClose = () => {
+    setShowModal(false);
+  };
+
+  const handleModalOnOpen = () => {
+    setShowModal(true);
+  };
 
   const handleOnChange = (e) => {
     const values = {
@@ -254,8 +289,8 @@ function Post({ id, username, profileImg, postImg, caption }) {
           <Username>{username}</Username>
         </HeaderLeftSide>
         <HeaderRightSide>
-          <Icon>
-            <MoreHorizontal size={28} />
+          <Icon onClick={handleModalOnOpen}>
+          <MoreHorizontal size={28} />
           </Icon>
         </HeaderRightSide>
       </PostHeader>
@@ -305,6 +340,12 @@ function Post({ id, username, profileImg, postImg, caption }) {
           Post
         </Button>
       </NewComment>
+      <Modal show={showModal} onClose={handleModalOnClose}>
+        <PostOptions>
+          <OptionButton><Link to={`/post/${id}`}>Go to post</Link></OptionButton>
+          <OptionButton onClick={handleModalOnClose}>Cancel</OptionButton>
+        </PostOptions>
+      </Modal>
     </Container>
   );
 }
