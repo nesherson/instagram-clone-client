@@ -5,6 +5,7 @@ import Signup from "./features/auth/components/Signup/Signup";
 import Login from "./features/auth/components/Login/Login";
 import Feed from "./features/posts/components/Feed";
 import UserProfile from "./features/user/components/userProfile";
+import PostDetails from './features/posts/components/PostDetails';
 
 function App() {
   const token = JSON.parse(localStorage.getItem("userData"));
@@ -16,6 +17,9 @@ function App() {
       </PrivateRoute>
       <PrivateRoute path="/profile/:id">
         <UserProfile/>
+      </PrivateRoute>
+      <PrivateRoute path="/post/:id">
+        <PostDetails/>
       </PrivateRoute>
 
      { !token ?
