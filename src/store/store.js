@@ -9,6 +9,7 @@ import newCommentReducer from '../features/posts/postsSlice/newCommentSlice';
 import commentListSlice from '../features/posts/postsSlice/commentListSlice';
 import likeListSlice from '../features/posts/postsSlice/likeListSlice'
 import savedPostListSlice from '../features/posts/postsSlice/savedPostListSlice';
+import postSlice from '../features/posts/postsSlice/postSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     newComment: newCommentReducer,
     commentList: commentListSlice,
     likeList: likeListSlice,
-    savedPostList: savedPostListSlice
+    savedPostList: savedPostListSlice,
+    post: postSlice
   },
 });
