@@ -1,20 +1,17 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import { useEffect } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from "react-hook-form";
 
-import {
-  onEmailChange,
-  onPasswordChange,
-  clearInput,
-} from '../../authSlice/loginSlice';
-import { selectEmail, selectPassword } from '../../authSlice/loginSlice';
+import { selectAuthUser } from "../../authSlice/authSlice";
+import { loginUser } from "../../authSlice/authSlice";
 
-import { selectUser } from '../../../user/userSlice/userSlice';
+import { EmailInput, PasswordInput } from "./LoginForm";
 
-import { loginUser } from '../../../user/userSlice/userSlice';
+import signupImg from "../../../../assets/images/signup_img.jpg";
 
-import signupImg from '../../../../assets/images/signup_img.jpg';
+import { EMAIL_REGEXP } from "../../../../constants/constants";
 
 const Container = styled.div`
   width: 800px;
@@ -29,7 +26,7 @@ const Container = styled.div`
     0 19px 80px rgba(0, 0, 0, 0.07);
 
   @media only screen and (max-width: 1599px) {
-    margin: 50px auto 0 auto; 
+    margin: 50px auto 0 auto;
   }
 
   @media only screen and (max-width: 1024px) {
@@ -109,19 +106,6 @@ const Form = styled.form`
   flex-direction: column;
 `;
 
-const Input = styled.input`
-  margin: 6px 0;
-  padding: 9px 10px;
-  border-radius: 7px;
-  border: 2px solid #dbe7eb;
-  color: #808080;
-  background-color: #f7f8f9;
-  outline: none;
-  &:focus {
-    border-color: #8cb2c0;
-  }
-`;
-
 const Button = styled.button`
   padding: 10px 45px;
   margin: 10px 0;
@@ -145,80 +129,63 @@ const Link = styled(NavLink)`
   color: #5b86a7;
 `;
 
-const Login = () => {
-  const emailValue = useSelector(selectEmail);
-  const passwordValue = useSelector(selectPassword);
-  const { isSuccess } = useSelector(selectUser);
+const Warning = styled.span`
+  font-size: 0.8rem;
+  color: #ff1a1a;
+  text-align: center;
+`;
+
+function Login() {
 
   const history = useHistory();
-
   const dispatch = useDispatch();
 
-  const handleOnChange = (e, input) => {
-    switch (input) {
-      case 'email':
-        dispatch(onEmailChange(e.target.value));
-        break;
-      case 'password':
-        dispatch(onPasswordChange(e.target.value));
-        break;
-      default:
-        return;
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const { isSuccess, isError, errorMessage } = useSelector(selectAuthUser);
+
+  const onSubmit = ({email, password}) => {
+    const values = {email, password};
+    dispatch(loginUser(values));
   };
-
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-
-    const userData = {
-      email: emailValue,
-      password: passwordValue,
-    };
-
-    dispatch(loginUser(userData));
-
-    dispatch(clearInput());
-  };
-
+  
   useEffect(() => {
     if (isSuccess) {
-      history.push('/feed');  
+      history.push('/feed');
     }
   }, [history, isSuccess]);
-
 
   return (
     <Container>
       <LoginWrapper>
         <Headline>Welcome back</Headline>
-        <Form onSubmit={handleOnSubmit}>
+        <Form onSubmit={handleSubmit(onSubmit)} noValidate>
           <H2>Let's sign you in</H2>
-          <Input
-            type='email'
-            name='email'
-            value={emailValue}
-            onChange={(e) => {
-              handleOnChange(e, 'email');
-            }}
-            placeholder='email'
-          />
-          <Input
-            type='password'
+          <EmailInput name='email' register={register} required pattern={EMAIL_REGEXP} errors={errors} />
+          <PasswordInput
             name='password'
-            value={passwordValue}
-            onChange={(e) => {
-              handleOnChange(e, 'password');
-            }}
-            placeholder='password'
+            register={register}
+            required
+            minLength={6}
+            errors={errors}
           />
-          <Button type='submit'>Log in</Button>
+          <Button type="submit">Log in</Button>
+          {
+            isError ? 
+            <Warning>{errorMessage}</Warning>
+            : null
+          }
         </Form>
         <P>
-          Don't have an account? <Link to='/signup'>Sign up</Link>
+          Don't have an account? <Link to="/signup">Sign up</Link>
         </P>
       </LoginWrapper>
       <ImageWrapper>
-        <Image src={signupImg} alt='two hands trying to touch' />
+        <Image src={signupImg} alt="two hands trying to touch" />
         {/*Image author: https://unsplash.com/photos/iJ2IG8ckCpA?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink*/}
       </ImageWrapper>
     </Container>
