@@ -1,23 +1,15 @@
 import styled from 'styled-components';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+  
+import { signupUser, selectAuthUser } from '../../authSlice/authSlice';
 
-import {
-  onEmailChange,
-  onFullnameChange,
-  onUsernameChange,
-  onPasswordChange,
-} from '../../authSlice/signupSlice';
-import {
-  selectEmail,
-  selectFullname,
-  selectUsername,
-  selectPassword,
-} from '../../authSlice/signupSlice';
-
-import { signupUser } from '../../../user/userSlice/userSlice';
+import { EmailInput, UsernameInput, FullnameInput, PasswordInput } from './SignupForm';
 
 import img from '../../../../assets/images/signup_img.jpg';
+import { EMAIL_REGEXP } from '../../../../constants/constants';
+import { useEffect } from 'react';
 
 const Container = styled.div`
   width: 800px;
@@ -113,19 +105,6 @@ const Form = styled.form`
   flex-direction: column;
 `;
 
-const Input = styled.input`
-  margin: 6px 0;
-  padding: 9px 10px;
-  border-radius: 7px;
-  border: 2px solid #dbe7eb;
-  color: #808080;
-  background-color: #f7f8f9;
-  outline: none;
-  &:focus {
-    border-color: #8cb2c0;
-  }
-`;
-
 const Button = styled.button`
   padding: 10px 45px;
   margin: 10px 0;
@@ -149,98 +128,49 @@ const Link = styled(NavLink)`
   color: #5b86a7;
 `;
 
+const Warning = styled.span`
+  font-size: 0.8rem;
+  color: #ff1a1a;
+  text-align: center;
+`;
+
 const Signup = () => {
-  const emailValue = useSelector(selectEmail);
-  const fullnameValue = useSelector(selectFullname);
-  const usernameValue = useSelector(selectUsername);
-  const passwordValue = useSelector(selectPassword);
-
+  
   const history = useHistory();
-
   const dispatch = useDispatch();
 
-  const handleOnChange = (e, input) => {
-    switch (input) {
-      case 'email':
-        dispatch(onEmailChange(e.target.value));
-        break;
-      case 'fullname':
-        dispatch(onFullnameChange(e.target.value));
-        break;
-      case 'username':
-        dispatch(onUsernameChange(e.target.value));
-        break;
-      case 'password':
-        dispatch(onPasswordChange(e.target.value));
-        break;
-      default:
-        return;
+  const { register, handleSubmit, formState: {errors} } = useForm();
+  const {isSuccess, isError, errorMessage} = useSelector(selectAuthUser);
+
+  const onSubmit = ({email, fullname, username, password}) => {
+    const values = {email, fullname, username, password};
+
+    dispatch(signupUser(values));
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      history.push('/feed');
     }
-  };
+  }, [history, isSuccess]);
 
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-
-    const userData = {
-      email: emailValue,
-      fullname: fullnameValue,
-      username: usernameValue,
-      password: passwordValue,
-    };
-
-    dispatch(signupUser(userData))
-      .then((res) => {
-        console.log('signup/onSubmit: ', res.payload);
-        history.push('/');
-      })
-      .catch((err) => {
-        console.log('signup/onSubmit - err: ', err);
-      });
-  };
 
   return (
     <Container>
       <LoginWrapper>
         <Headline>Create Account</Headline>
-        <Form onSubmit={handleOnSubmit}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <H2>Sign up to see photos and videos from your friends.</H2>
-          <Input
-            type='email'
-            name='email'
-            value={emailValue}
-            onChange={(e) => {
-              handleOnChange(e, 'email');
-            }}
-            placeholder='email'
-          />
-          <Input
-            type='text'
-            name='fullname'
-            value={fullnameValue}
-            onChange={(e) => {
-              handleOnChange(e, 'fullname');
-            }}
-            placeholder='fullname'
-          />
-          <Input
-            type='text'
-            name='username'
-            value={usernameValue}
-            onChange={(e) => {
-              handleOnChange(e, 'username');
-            }}
-            placeholder='username'
-          />
-          <Input
-            type='password'
-            name='password'
-            value={passwordValue}
-            onChange={(e) => {
-              handleOnChange(e, 'password');
-            }}
-            placeholder='password'
-          />
+          <EmailInput name='email' register={register} required pattern={EMAIL_REGEXP} errors={errors}/>
+          <FullnameInput name='fullname' register={register} required maxLength={14} errors={errors}/>
+          <UsernameInput name='username' register={register} required maxLength={14} errors={errors}/>
+          <PasswordInput name='password' register={register} required minLength={6} errors={errors}/>
           <Button type='submit'>Sign up</Button>
+          {
+            isError ? 
+            <Warning>{errorMessage}</Warning>
+            : null
+          }
         </Form>
         <P>
           Have an account? <Link to='/'>Log in</Link>
