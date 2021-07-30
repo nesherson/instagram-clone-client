@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Route, NavLink, useRouteMatch } from 'react-router-dom';
+import { Route, NavLink, useRouteMatch, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 
 import { selectUser } from '../userSlice/userSlice';
-import { fetchUser } from '../userSlice/userSlice';
+import { fetchUserByUsername } from '../userSlice/userSlice';
 
 import { selectSavedPosts, fetchSavedPosts } from '../../posts/postsSlice/savedPostListSlice'
 
@@ -174,19 +174,19 @@ const Stats = styled.span`
 `;
 
 function UserProfile() {
-  const { userId, profileImg, username, fullname, posts } = useSelector(selectUser);
+  const { id, profileImg, username, fullname, posts } = useSelector(selectUser);
   const savedPosts = useSelector(selectSavedPosts);
 
   const dispatch = useDispatch();
+  const params = useParams();
   const { url } = useRouteMatch();
 
   useEffect(() => {
-    dispatch(fetchSavedPosts(userId));
-    dispatch(fetchUser());
+    dispatch(fetchUserByUsername(params.id));
   }, [dispatch]);
 
   useEffect(() => {
-   
+    dispatch(fetchSavedPosts(id));
   }, [dispatch]);
 
   return (
