@@ -6,15 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
 
 import {
-  selectNewCommentPostSuccess,
+  selectNewComment,
   submitNewComment,
 } from "../../postsSlice/newCommentSlice";
 
-import { fetchCommentsByPostId, selectCommentsFetchStatus } from "../../postsSlice/postListSlice";
-
 import {
   likePost,
-  selectLikes,
   fetchLikes,
   selectLikePostStatus,
 } from "../../postsSlice/likesSlice";
@@ -178,7 +175,7 @@ function Post({ id, username, profileImg, postImg, caption, likes, comments }) {
 
   const dispatch = useDispatch();
 
-  const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
+  const { newCommentSubmitSuccess } = useSelector(selectNewComment);
 
   const {
     register,
@@ -229,22 +226,16 @@ function Post({ id, username, profileImg, postImg, caption, likes, comments }) {
   };
 
   useEffect(() => {
-    if (newCommentPostSuccess) {
-      dispatch(fetchCommentsByPostId(id));
-    }
-  }, [dispatch, newCommentPostSuccess]);
-
-  useEffect(() => {
     if (likePostStatus.isSuccess) {
       dispatch(fetchLikes());
     }
   }, [dispatch, likePostStatus.isSuccess]);
 
   useEffect(() => {
-    if (newCommentPostSuccess) {
+    if (newCommentSubmitSuccess) {
       setValue('newComment', '');
     }
-  }, [newCommentPostSuccess]);
+  }, [newCommentSubmitSuccess]);
 
   return (
     <Container>
