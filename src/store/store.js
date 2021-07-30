@@ -1,27 +1,23 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import signupReducer from '../features/auth/authSlice/signupSlice';
-import loginReducer from '../features/auth/authSlice/loginSlice';
+import authReducer from '../features/auth/authSlice/authSlice';
 import userReducer from '../features/user/userSlice/userSlice';
 import newPostReducer from '../features/posts/postsSlice/newPostSlice';
 import postListReducer from '../features/posts/postsSlice/postListSlice';
 import newCommentReducer from '../features/posts/postsSlice/newCommentSlice';
-import commentListSlice from '../features/posts/postsSlice/commentListSlice';
-import likeListSlice from '../features/posts/postsSlice/likeListSlice'
-import savedPostListSlice from '../features/posts/postsSlice/savedPostListSlice';
-import postSlice from '../features/posts/postsSlice/postSlice';
+import likesReducer from '../features/posts/postsSlice/likesSlice'
+import savedPostListReducer from '../features/posts/postsSlice/savedPostListSlice';
+import postReducer from '../features/posts/postsSlice/postSlice';
 
 export const store = configureStore({
   reducer: {
-    signup: signupReducer,
-    login: loginReducer,
+    auth: authReducer,
     user: userReducer,
     newPost: newPostReducer,
     postList: postListReducer,
     newComment: newCommentReducer,
-    commentList: commentListSlice,
-    likeList: likeListSlice,
-    savedPostList: savedPostListSlice,
-    post: postSlice
+    likes: likesReducer,
+    savedPostList: savedPostListReducer,
+    post: postReducer
   },
 });
