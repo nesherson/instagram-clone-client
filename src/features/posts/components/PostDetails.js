@@ -15,16 +15,13 @@ import {
   submitNewComment,
 } from "../postsSlice/newCommentSlice";
 
-// import { fetchComments, selectComments } from '../postsSlice/commentListSlice';
-
-import { likePost, selectLikePostSuccess } from "../postsSlice/likeListSlice";
+import { likePost, selectLikePostStatus } from "../postsSlice/likesSlice";
 
 import { fetchPostById, selectPost } from "../postsSlice/postSlice";
 
-import { selectUser } from "../../user/userSlice/userSlice";
 import { savePost } from "../../user/userSlice/userSlice";
 
-import Modal from "../../../components/modal/Modal";
+import Modal from "../../../components/Modal/Modal";
 import Header from "./Header";
 
 const Container = styled.article`
@@ -39,7 +36,7 @@ const Container = styled.article`
 `;
 
 const PostHeader = styled.div`
-  height: 60px;
+  height: 52px;
   border-bottom: 1px solid rgba(185, 185, 185, 0.4);
   padding: 5px 20px;
   display: flex;
@@ -192,7 +189,7 @@ function PostDetails() {
 
   const newComments = useSelector(selectNewComments);
   const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
-  const likePostSuccess = useSelector(selectLikePostSuccess);
+  const likePostStatus = useSelector(selectLikePostStatus);
 
   const newCommentText = useSelector((state) => {
     const index = state.newComment.comments.findIndex(
@@ -263,7 +260,7 @@ function PostDetails() {
 
   useEffect(() => {
     dispatch(fetchPostById(id));
-  }, [dispatch, likePostSuccess]);
+  }, [dispatch, likePostStatus.isSuccess]);
 
   return (
     <>
@@ -313,7 +310,7 @@ function PostDetails() {
                   ? comments.map((comment) => {
                       return (
                         <Comment key={comment.id}>
-                          <Username>{comment.username}</Username>
+                          <Username>{comment.user.username}</Username>
                           <Text>{comment.text}</Text>
                         </Comment>
                       );
