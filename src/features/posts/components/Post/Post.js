@@ -1,28 +1,32 @@
-import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useForm } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux';
-import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
+import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
 
 import {
   selectNewCommentPostSuccess,
-  submitNewComment
-} from '../../postsSlice/newCommentSlice';
+  submitNewComment,
+} from "../../postsSlice/newCommentSlice";
 
-import { fetchComments, selectComments } from '../../postsSlice/commentListSlice';
+import { fetchCommentsByPostId, selectCommentsFetchStatus } from "../../postsSlice/postListSlice";
 
-import { likePost, selectLikes, fetchLikes, selectLikePostSuccess } from '../../postsSlice/likeListSlice';
+import {
+  likePost,
+  selectLikes,
+  fetchLikes,
+  selectLikePostStatus,
+} from "../../postsSlice/likesSlice";
 
-import { selectUser } from '../../../user/userSlice/userSlice';
-import { savePost } from '../../../user/userSlice/userSlice'
+import { selectUser, savePost } from "../../../user/userSlice/userSlice";
 
-import { NewCommentInput } from './NewCommentForm';
+import { NewCommentInput } from "./NewCommentForm";
 
-import Modal from '../../../../components/Modal/Modal';
+import Modal from "../../../../components/Modal/Modal";
 
 const Container = styled.article`
-  border: 1px solid rgba(185,185,185,0.4);
+  border: 1px solid rgba(185, 185, 185, 0.4);
   margin-top: 30px;
   border-radius: 7px;
   background-color: #fff;
@@ -33,7 +37,7 @@ const Container = styled.article`
 
 const PostHeader = styled.div`
   height: 52px;
-  border-bottom: 1px solid rgba(185,185,185,0.4);
+  border-bottom: 1px solid rgba(185, 185, 185, 0.4);
   padding: 5px 20px;
   display: flex;
   align-items: center;
@@ -53,7 +57,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   border-radius: 50%;
   background-color: #e7e7e7;
-  border: 1px solid rgba(185,185,185,0.4);
+  border: 1px solid rgba(185, 185, 185, 0.4);
 `;
 
 const ProfileImg = styled.img`
@@ -92,7 +96,7 @@ const PostImg = styled.img`
 
 const PostBody = styled.div`
   padding: 0.6em;
-  border-bottom: 1px solid rgba(185,185,185,0.4);
+  border-bottom: 1px solid rgba(185, 185, 185, 0.4);
 `;
 
 const Social = styled.div`
@@ -139,7 +143,7 @@ const Button = styled.button`
   border-radius: 6px;
   padding: 7px;
   margin-left: 5px;
-  background-color: ${(props) => (props.disabled ? '#bdcedb' : '#5b86a7')};
+  background-color: ${(props) => (props.disabled ? "#bdcedb" : "#5b86a7")};
   color: #fff;
   width: 10%;
   @media only screen and (max-width: 464px) {
@@ -154,7 +158,7 @@ const PostOptions = styled.section`
 
 const OptionButton = styled.button`
   border: none;
-  border-bottom: 1px solid rgba(185,185,185,0.4);
+  border-bottom: 1px solid rgba(185, 185, 185, 0.4);
   padding: 15px 0;
   background-color: #fff;
   font-size: 0.95rem;
@@ -169,43 +173,33 @@ const Link = styled(NavLink)`
   }
 `;
 
-function Post({ id, username, profileImg, postImg, caption }) {
-
+function Post({ id, username, profileImg, postImg, caption, likes, comments }) {
   const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
 
   const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const onSubmit = ({newComment}) => {
+  const onSubmit = ({ newComment }) => {
     const values = {
       postId: id,
-      newComment
-    }
+      newComment,
+    };
 
     dispatch(submitNewComment(values));
   };
 
   const { userId } = useSelector(selectUser);
 
-  const likePostSuccess = useSelector(selectLikePostSuccess);
-
-  const commentList = useSelector(selectComments)
-    .filter((comment) => comment.postId === id)
-    .map((comment) => ({
-      id: comment.id,
-      username: comment.user.username,
-      text: comment.text,
-    }));
-
-    const likes = useSelector(selectLikes)
-    .filter((like) => like.postId === id)
-    .map((like) => ({
-      id: like.id,
-      userId: like.userId
-    }));
+  const likePostStatus = useSelector(selectLikePostStatus);
 
   const handleModalOnClose = () => {
     setShowModal(false);
@@ -222,27 +216,35 @@ function Post({ id, username, profileImg, postImg, caption }) {
   const handleBookmark = () => {
     const values = {
       userId: userId,
-      postId: id
+      postId: id,
     };
     dispatch(savePost(values));
   };
 
   const isInputEmpty = () => {
-    const newCommentValue = watch('newComment');
-    return typeof newCommentValue === 'undefined' || newCommentValue.length < 1 ? true : false;
+    const newCommentValue = watch("newComment");
+    return typeof newCommentValue === "undefined" || newCommentValue.length < 1
+      ? true
+      : false;
   };
 
   useEffect(() => {
-    dispatch(fetchComments());
+    if (newCommentPostSuccess) {
+      dispatch(fetchCommentsByPostId(id));
+    }
   }, [dispatch, newCommentPostSuccess]);
 
   useEffect(() => {
-    reset();
-  }, [newCommentPostSuccess]);
+    if (likePostStatus.isSuccess) {
+      dispatch(fetchLikes());
+    }
+  }, [dispatch, likePostStatus.isSuccess]);
 
   useEffect(() => {
-    dispatch(fetchLikes());
-  }, [dispatch, likePostSuccess]);
+    if (newCommentPostSuccess) {
+      setValue('newComment', '');
+    }
+  }, [newCommentPostSuccess]);
 
   return (
     <Container>
@@ -253,11 +255,13 @@ function Post({ id, username, profileImg, postImg, caption }) {
               <ProfileImg src={profileImg} />
             </ImageWrapper>
           </UserImage>
-          <Username><Link to={`/profile/${username}`}>{username}</Link></Username>
+          <Username>
+            <Link to={`/profile/${username}`}>{username}</Link>
+          </Username>
         </HeaderLeftSide>
         <HeaderRightSide>
           <Icon onClick={handleModalOnOpen}>
-          <MoreHorizontal size={28} />
+            <MoreHorizontal size={28} />
           </Icon>
         </HeaderRightSide>
       </PostHeader>
@@ -284,8 +288,8 @@ function Post({ id, username, profileImg, postImg, caption }) {
           <Text>{caption}</Text>
         </PostCaption>
         <PostComments>
-          {commentList.length > 0
-            ? commentList.map((comment) => {
+          {comments.length > 0
+            ? comments.map((comment) => {
                 return (
                   <Comment key={comment.id}>
                     <Username>{comment.username}</Username>
@@ -297,14 +301,22 @@ function Post({ id, username, profileImg, postImg, caption }) {
         </PostComments>
       </PostBody>
       <NewComment>
-        <NewCommentInput type='text' name='newComment' register={register} placeholder='Add a comment...' errors={errors} />
+        <NewCommentInput
+          type="text"
+          name="newComment"
+          register={register}
+          placeholder="Add a comment..."
+          errors={errors}
+        />
         <Button disabled={isInputEmpty()} onClick={handleSubmit(onSubmit)}>
           Post
         </Button>
       </NewComment>
       <Modal show={showModal} onClose={handleModalOnClose}>
         <PostOptions>
-          <OptionButton><Link to={`/post/${id}`}>Go to post</Link></OptionButton>
+          <OptionButton>
+            <Link to={`/post/${id}`}>Go to post</Link>
+          </OptionButton>
           <OptionButton onClick={handleModalOnClose}>Cancel</OptionButton>
         </PostOptions>
       </Modal>
