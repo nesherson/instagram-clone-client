@@ -1,4 +1,8 @@
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+
+import { selectUser } from '../../user/userSlice/userSlice'
+
 
 const Container = styled.div`
   grid-column-start: 3;
@@ -51,7 +55,9 @@ const Fullname = styled.span`
   color: #ccc;
 `;
 
-function UserDetails({ username, fullname, profileImg }) {
+function UserDetails() {
+  const { username, fullname, profileImg } = useSelector(selectUser);
+
   return (
     <Container>
       <UserImage>
