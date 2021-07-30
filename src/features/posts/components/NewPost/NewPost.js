@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { selectUser } from '../../../user/userSlice/userSlice';
+
 import { selectNewPost, submitNewPost} from '../../postsSlice/newPostSlice';
 
 import { ImageUrlInput, CaptionTextarea } from './NewPostForm';
 
-import {URL_REGEXP} from '../../../../constants/constants';
+import { URL_REGEXP } from '../../../../constants/constants';
 
 
 const Container = styled.div`
@@ -90,8 +92,11 @@ const Warning = styled.span`
   color: #ff1a1a;
 `;
 
-function NewPost({ profileImg }) {
+function NewPost() {
+
   const dispatch = useDispatch();
+
+  const { profileImg } = useSelector(selectUser);
 
   const { register, handleSubmit, reset, formState: {errors}} = useForm();
   const { isSuccess, isError, errorMessage } = useSelector(selectNewPost);
@@ -103,7 +108,9 @@ function NewPost({ profileImg }) {
   };
 
   useEffect(() => {
-    reset();
+    if (isSuccess) {
+      reset();
+    }
   }, [isSuccess]);
 
   return (
