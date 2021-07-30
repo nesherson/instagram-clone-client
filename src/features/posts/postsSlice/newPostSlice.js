@@ -30,12 +30,10 @@ export const submitNewPost = createAsyncThunk(
 );
 
 const initialState = {
-  imageUrl: "",
-  caption: "",
-  isFetching: false,
-  isSuccess: false,
-  isError: false,
-  errorMessage: "",
+  newPostSubmiting: false,
+  newPostSubmitSuccess: false,
+  newPostSubmitError: false,
+  newPostSubmitErrorMessage: "",
 };
 
 const newPostSlice = createSlice({
@@ -44,20 +42,20 @@ const newPostSlice = createSlice({
   reducers: {},
   extraReducers: {
     [submitNewPost.fulfilled]: (state, action) => {
-      state.isFetching = false;
-      state.isSuccess = true;
-      state.isError = false;
+      state.newPostSubmiting = false;
+      state.newPostSubmitSuccess = true;
+      state.newPostSubmitError = false;
     },
     [submitNewPost.pending]: (state, action) => {
-      state.isFetching = true;
-      state.isSuccess = false;
-      state.isError = false;
+      state.newPostSubmiting = true;
+      state.newPostSubmitSuccess = false;
+      state.newPostSubmitError = false;
     },
     [submitNewPost.rejected]: (state, action) => {
-      state.isFetching = false;
-      state.isSuccess = false;
-      state.isError = true;
-      state.errorMessage = action.payload.message;
+      state.newPostSubmiting = false;
+      state.newPostSubmitSuccess = false;
+      state.newPostSubmitError = true;
+      state.newPostSubmitErrorMessage = action.payload.message;
     },
   },
 });
