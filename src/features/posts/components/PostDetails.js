@@ -2,32 +2,27 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useForm } from 'react-hook-form';
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
 
-import {
-  selectNewComments,
-  selectNewCommentPostSuccess,
-} from "../postsSlice/newCommentSlice";
+import { selectNewComment } from "../postsSlice/newCommentSlice";
 
-import {
-  onTextChange,
-  clearState,
-  submitNewComment,
-} from "../postsSlice/newCommentSlice";
+import { submitNewComment } from "../postsSlice/newCommentSlice";
 
 import { likePost, selectLikePostStatus } from "../postsSlice/likesSlice";
 
-import { fetchPostById, selectPost } from "../postsSlice/postSlice";
+import { selectPost, fetchPostById, fetchCommentsByPostId } from "../postsSlice/postSlice";
 
 import { savePost } from "../../user/userSlice/userSlice";
 
+import { NewCommentInput } from "./Post/NewCommentForm";
 import Modal from "../../../components/Modal/Modal";
 import Header from "./Header";
 
 const Container = styled.article`
   margin: 94px auto 25px auto;
   width: 862px;
-  border: 1px solid rgba(185, 185, 185, 0.4);   
+  border: 1px solid rgba(185, 185, 185, 0.4);
   border-radius: 7px;
   background-color: #fff;
   @media only screen and (max-width: 664px) {
@@ -181,26 +176,23 @@ const Link = styled(NavLink)`
 
 function PostDetails() {
   const { id } = useParams();
-
-  const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
-  const [showModal, setShowModal] = useState(false);
-
   const dispatch = useDispatch();
 
-  const newComments = useSelector(selectNewComments);
-  const newCommentPostSuccess = useSelector(selectNewCommentPostSuccess);
+  const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
+  const { register, handleSubmit, setValue, watch, formState: { errors }} = useForm();
+  const [showModal, setShowModal] = useState(false);
+
+  const { newCommentSubmitSuccess } = useSelector(selectNewComment);
   const likePostStatus = useSelector(selectLikePostStatus);
 
-  const newCommentText = useSelector((state) => {
-    const index = state.newComment.comments.findIndex(
-      (comment) => comment.postId === id
-    );
-    if (index !== -1) {
-      return state.newComment.comments[index].commentText;
-    } else {
-      return "";
-    }
-  });
+  const onSubmit = ({newComment}) => {
+    const values = {
+      postId: id,
+      newComment
+    };
+
+    dispatch(submitNewComment(values));
+  };
 
   const handleModalOnClose = () => {
     setShowModal(false);
@@ -208,25 +200,6 @@ function PostDetails() {
 
   const handleModalOnOpen = () => {
     setShowModal(true);
-  };
-
-  const handleOnChange = (e) => {
-    const values = {
-      postId: id,
-      commentText: e.target.value,
-    };
-    dispatch(onTextChange(values));
-  };
-
-  const handleOnClick = () => {
-    const index = newComments.findIndex((comment) => comment.postId === id);
-
-    const values = {
-      postId: id,
-      commentText: newComments[index].commentText,
-    };
-
-    dispatch(submitNewComment(values));
   };
 
   const handleLikePost = () => {
@@ -242,12 +215,10 @@ function PostDetails() {
   };
 
   const isInputEmpty = () => {
-    const index = newComments.findIndex((comment) => comment.postId === id);
-    if (index === -1) {
-      return true;
-    } else {
-      return newComments[index].commentText === "";
-    }
+    const newCommentValue = watch("newComment");
+    return typeof newCommentValue === "undefined" || newCommentValue.length < 1
+      ? true
+      : false;
   };
 
   useEffect(() => {
@@ -255,8 +226,16 @@ function PostDetails() {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchPostById(id));
-  }, [dispatch, newCommentPostSuccess]);
+    if (newCommentSubmitSuccess) {
+      dispatch(fetchCommentsByPostId(id));
+    }
+  }, [dispatch, newCommentSubmitSuccess]);
+
+  useEffect(() => {
+    if (newCommentSubmitSuccess) {
+      setValue('newComment', '');
+    }
+  }, [dispatch, newCommentSubmitSuccess]);
 
   useEffect(() => {
     dispatch(fetchPostById(id));
@@ -310,7 +289,7 @@ function PostDetails() {
                   ? comments.map((comment) => {
                       return (
                         <Comment key={comment.id}>
-                          <Username>{comment.user.username}</Username>
+                          <Username>{comment.username}</Username>
                           <Text>{comment.text}</Text>
                         </Comment>
                       );
@@ -319,13 +298,8 @@ function PostDetails() {
               </PostComments>
             </PostBody>
             <NewComment>
-              <Input
-                type="text"
-                value={newCommentText}
-                onChange={handleOnChange}
-                placeholder="Add a comment..."
-              />
-              <Button disabled={isInputEmpty()} onClick={handleOnClick}>
+              <NewCommentInput type='text' name='newComment' register={register} placeholder='Add a comment...' errors={errors} />
+              <Button disabled={isInputEmpty()} onClick={handleSubmit(onSubmit)}>
                 Post
               </Button>
             </NewComment>
