@@ -1,6 +1,11 @@
 import styled from 'styled-components';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import Post from './Post';
+import { selectNewPost } from '../postsSlice/newPostSlice';
+import { selectPosts, fetchPosts, } from '../postsSlice/postListSlice';
+
+import Post from './Post/Post';
 
 const Container = styled.div`
   grid-column-start: 2;
@@ -17,20 +22,31 @@ const PostList = styled.ul`
   padding: 0;
 `;
 
-function Posts({ postList }) {
+function Posts() {
+
+  const dispatch = useDispatch();
+
+  const { newPostSubmitSuccess } = useSelector(selectNewPost);
+  const postList = useSelector(selectPosts);
+
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, [dispatch, newPostSubmitSuccess]);
+
   return (
     <Container>
       <PostList>
-        {postList.map((post) => {
+      {postList.map((post) => {
           return (
             <Post
               key={post.id}
               id={post.id}
+              caption={post.caption}
+              postImg={post.imageUrl}
               username={post.user.username}
               profileImg={post.user.profileImg}
-              postImg={post.imageUrl}
               likes={post.likes}
-              caption={post.caption}
+              comments={post.comments}
             />
           );
         })}
@@ -38,5 +54,7 @@ function Posts({ postList }) {
     </Container>
   );
 }
+
+
 
 export default Posts;

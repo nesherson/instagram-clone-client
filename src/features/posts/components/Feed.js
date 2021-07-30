@@ -1,24 +1,18 @@
 import styled from 'styled-components';
+
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { selectPosts } from '../postsSlice/postListSlice';
-import { fetchPosts } from '../postsSlice/postListSlice';
-
-import { selectUser } from '../../user/userSlice/userSlice';
 import { fetchUser } from '../../user/userSlice/userSlice';
-
-import { selectNewPost } from '../postsSlice/newPostSlice';
 
 import Header from './Header';
 import Posts from './Posts';
-import NewPost from './NewPost';
+import NewPost from './NewPost/NewPost';
 import UserDetails from './UserDetails';
-import { selectNewCommentPostSuccess } from '../postsSlice/newCommentSlice';
 
 const Container = styled.section`
   padding-top: 94px;
-  height: calc(100vh - 94px );
+  min-height: 100vh;
   display: grid;
   grid-template-rows: 130px auto;
   grid-template-columns: 1fr 614px 322px 1fr;
@@ -35,33 +29,19 @@ const Container = styled.section`
 `;
 
 function Feed() {
+
   const dispatch = useDispatch();
-  const { username, fullname, profileImg } = useSelector(selectUser);
-  const {newPostSubmitSuccess} = useSelector(selectNewPost);
-  const posts = useSelector(selectPosts);
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch, newPostSubmitSuccess]);
-
   return (
     <Container>
       <Header />
-      <NewPost profileImg={profileImg} />
-      <UserDetails
-        username={username}
-        fullname={fullname}
-        profileImg={profileImg}
-      />
-      <Posts postList={posts} />
+      <NewPost />
+      <UserDetails />
+      <Posts />
     </Container>
   );
 }
