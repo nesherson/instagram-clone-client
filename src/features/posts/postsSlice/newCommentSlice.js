@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const submitNewComment = createAsyncThunk(
   'newComment/submitNewComment',
-  async ({ postId, commentText }, thunkAPI) => {
+  async ({ postId, newComment }, thunkAPI) => {
     try {
       const {token} = JSON.parse(localStorage.getItem('userData'));
 
@@ -15,7 +15,7 @@ export const submitNewComment = createAsyncThunk(
             'Content-Type': 'application/json',
             'x-auth-token': token,
           },
-          body: JSON.stringify({ commentText }),
+          body: JSON.stringify({ newComment }),
         }
       );
 
@@ -33,7 +33,6 @@ export const submitNewComment = createAsyncThunk(
 );
 
 const initialState = {
-  comments: [],
   isFetching: false,
   isSuccess: false,
   isError: false,
@@ -44,37 +43,15 @@ const newCommentSlice = createSlice({
   name: 'newComment',
   initialState,
   reducers: {
-    onTextChange: (state, action) => {
-      const postId = action.payload.postId;
-      const commentText = action.payload.commentText;
-
-      const index = state.comments.findIndex(
-        (comment) => comment.postId === postId
-      );
-
-      if (index === -1) {
-        state.comments.push({
-          postId,
-          commentText,
-        });
-      }
-
-      state.comments[index] = {
-        ...state.comments[index],
-        commentText,
-      };
-    },
-    clearState: (state) => {
-      state.comments = [];
-    },
+    
   },
   extraReducers: {
-    [submitNewComment.fulfilled]: (state, action) => {
+    [submitNewComment.fulfilled]: (state) => {
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
     },
-    [submitNewComment.pending]: (state, action) => {
+    [submitNewComment.pending]: (state) => {
       state.isFetching = true;
       state.isSuccess = false;
       state.isError = false;
