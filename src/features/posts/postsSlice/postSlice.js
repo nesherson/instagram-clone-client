@@ -68,10 +68,10 @@ const postSlice = createSlice({
       state.isError = true;
       state.errorMessage = action.payload.message;
     },
-   
   },
 });
 
 export const selectPost = (state) => state.post;
+export const selectPostUser = (state) => state.post.user;
 
 export default postSlice.reducer;
