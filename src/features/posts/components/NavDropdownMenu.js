@@ -4,13 +4,13 @@ import { User, Bookmark, Settings } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUser } from '../../user/userSlice/userSlice';
-import { logoutUser } from '../../user/userSlice/userSlice';
+import { logoutUser } from '../../auth/authSlice/authSlice';
 
 const Container = styled.div`
   position: absolute;
   z-index: 999;
   top: 62px;
-  width: 270px;
+  width: 220px;
   transform: translateX(-45%);
   box-shadow: 0 0.5px 2.2px rgba(0, 0, 0, 0.02),
     0 1.3px 5.3px rgba(0, 0, 0, 0.028), 0 2.4px 10px rgba(0, 0, 0, 0.035),
@@ -26,8 +26,8 @@ const MenuItem = styled(NavLink)`
   align-items: center;
   border-radius: 7px;
   transition: background 500ms;
-  padding: 0.5rem;
-  margin: 0.6rem;
+  padding: 0.4rem;
+  margin: 0.5rem;
   color: #404040;
   text-decoration: none;
   height: calc(64px * 0.55);
