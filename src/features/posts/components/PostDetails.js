@@ -11,7 +11,7 @@ import { submitNewComment } from "../postsSlice/newCommentSlice";
 
 import { likePost, selectLikePostStatus } from "../postsSlice/likesSlice";
 
-import { selectPost, fetchPostById, fetchCommentsByPostId } from "../postsSlice/postSlice";
+import { selectPost, fetchPostById, fetchCommentsByPostId, fetchLikesByPostId } from "../postsSlice/postSlice";
 
 import { savePost } from "../../user/userSlice/userSlice";
 
@@ -238,7 +238,7 @@ function PostDetails() {
   }, [dispatch, newCommentSubmitSuccess]);
 
   useEffect(() => {
-    dispatch(fetchPostById(id));
+    dispatch(fetchLikesByPostId(id));
   }, [dispatch, likePostStatus.isSuccess]);
 
   return (
