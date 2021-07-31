@@ -61,6 +61,7 @@ export const fetchLikes = createAsyncThunk(
 
 const initialState = {
   likeList: [],
+  likedPostId: null,
   likesFetchStatus: {
     isFetching: false,
     isSuccess: false,
@@ -84,7 +85,6 @@ const likesSlice = createSlice({
       state.likesFetchStatus.isFetching = false;
       state.likesFetchStatus.isSuccess = true;
       state.likesFetchStatus.isError = false;
-      state.likes = action.payload.likes;
     },
     [fetchLikes.pending]: (state, action) => {
       state.likesFetchStatus.isFetching = true;
@@ -101,6 +101,7 @@ const likesSlice = createSlice({
       state.likePostStatus.isFetchking = false;
       state.likePostStatus.isSuccess = true;
       state.isError = false;
+      state.likedPostId = action.payload.postId;
     },
     [likePost.pending]: (state, action) => {
       state.likePostStatus.isFetchking = true;
@@ -116,7 +117,7 @@ const likesSlice = createSlice({
   },
 });
 
-export const selectLikes = (state) => state.likes.likeList;
+export const selectLikes = (state) => state.likes;
 
 export const selectLikePostStatus = (state) => state.likes.likePostStatus;
 

@@ -12,15 +12,12 @@ import {
 
 import {
   likePost,
-  fetchLikes,
-  selectLikePostStatus,
 } from "../../postsSlice/likesSlice";
 
 import { selectUser, savePost } from "../../../user/userSlice/userSlice";
 
-import { NewCommentInput } from "./NewCommentForm";
-
 import Modal from "../../../../components/Modal/Modal";
+import { NewCommentInput } from "./NewCommentForm";
 
 const Container = styled.article`
   border: 1px solid rgba(185, 185, 185, 0.4);
@@ -196,8 +193,6 @@ function Post({ id, username, profileImg, postImg, caption, likes, comments }) {
 
   const { userId } = useSelector(selectUser);
 
-  const likePostStatus = useSelector(selectLikePostStatus);
-
   const handleModalOnClose = () => {
     setShowModal(false);
   };
@@ -224,12 +219,6 @@ function Post({ id, username, profileImg, postImg, caption, likes, comments }) {
       ? true
       : false;
   };
-
-  useEffect(() => {
-    if (likePostStatus.isSuccess) {
-      dispatch(fetchLikes());
-    }
-  }, [dispatch, likePostStatus.isSuccess]);
 
   useEffect(() => {
     if (newCommentSubmitSuccess) {

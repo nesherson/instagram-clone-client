@@ -59,6 +59,35 @@ export const fetchCommentsByPostId = createAsyncThunk(
   }
 );
 
+
+export const fetchLikesByPostId = createAsyncThunk(
+  "post/fetchLikesByPostId",
+  async (postId, thunkAPI) => {
+    try {
+      const { token } = JSON.parse(localStorage.getItem("userData"));
+
+      const response = await fetch(`http://localhost:5000/post/${postId}/likes`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+
+      let data = await response.json();
+
+      if (response.status === 200) {
+        return data;
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   posts: [],
   postsFetchStatus: {
@@ -68,6 +97,12 @@ const initialState = {
     errorMessage: "",
   },
   commentsFetchStatus: {
+    isFetching: false,
+    isSuccess: false,
+    isError: false,
+    errorMessage: "",
+  },
+  likesFetchStatus: {
     isFetching: false,
     isSuccess: false,
     isError: false,
@@ -115,12 +150,30 @@ const postListSlice = createSlice({
       state.commentsFetchStatus.isError = true;
       state.commentsFetchStatus.errorMessage = action.payload.message;
     },
+    [fetchLikesByPostId.fulfilled]: (state, action) => {
+      state.likesFetchStatus.isFetching = false;
+      state.likesFetchStatus.isSuccess = true;
+      state.likesFetchStatus.isError = false;
+      const postId = action.payload.postId;
+      const index = state.posts.findIndex((post) => post.id === postId);
+      state.posts[index].likes = action.payload.likes;
+    },
+    [fetchLikesByPostId.pending]: (state, action) => {
+      state.likesFetchStatus.isFetching = true;
+      state.likesFetchStatus.isSuccess = false;
+      state.likesFetchStatus.isError = false;
+    },
+    [fetchLikesByPostId.rejected]: (state, action) => {
+      state.likesFetchStatus.isFetching = false;
+      state.likesFetchStatus.isSuccess = false;
+      state.likesFetchStatus.isError = true;
+      state.likesFetchStatus.errorMessage = action.payload.message;
+    },
   },
 });
 
 export const selectPosts = (state) => state.postList.posts;
 export const selectPostsFetchStatus = (state) => state.postList.postsFetchStatus;
 export const selectCommentsFetchStatus = (state) => state.postList.commentsFetchStatus;
-
 
 export default postListSlice.reducer;
