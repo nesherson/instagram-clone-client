@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchUser } from '../../user/userSlice/userSlice';
+import { fetchAuthUser } from '../../auth/authSlice/authSlice';
 
 import Header from './Header';
 import Posts from './Posts';
@@ -33,7 +33,7 @@ function Feed() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchAuthUser());
   }, [dispatch]);
 
   return (
