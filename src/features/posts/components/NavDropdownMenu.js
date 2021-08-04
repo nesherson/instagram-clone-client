@@ -3,7 +3,7 @@ import { NavLink, useHistory } from 'react-router-dom';
 import { User, Bookmark, Settings } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUser } from '../../user/userSlice/userSlice';
+import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
 import { logoutUser } from '../../auth/authSlice/authSlice';
 
 const Container = styled.div`
@@ -76,7 +76,7 @@ const Divider = styled.span`
 
 function NavDropdownMenu() {
 
-  const { username } = useSelector(selectUser);
+  const { username } = useSelector(selectAuthUser);
 
   const history = useHistory();
   const dispatch = useDispatch();

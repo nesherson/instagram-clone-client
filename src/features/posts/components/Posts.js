@@ -3,10 +3,13 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { selectNewPost } from '../postsSlice/newPostSlice';
-import { selectPosts, fetchPosts, fetchCommentsByPostId, fetchLikesByPostId } from '../postsSlice/postListSlice';
+import { selectPosts, fetchPosts } from '../postsSlice/postsSlice';
 
-import { selectNewComment } from '../postsSlice/newCommentSlice';
-import { selectLikes } from '../postsSlice/likesSlice';
+import { fetchComments } from '../postsApi/postsApi';
+import { selectNewCommentSubmitStatus } from '../postsSlice/commentsSlice';
+
+import { fetchLikes } from '../postsApi/postsApi';
+import { selectLikes, selectLikePostStatus } from '../postsSlice/likesSlice';
 
 import Post from './Post/Post';
 
@@ -29,25 +32,29 @@ function Posts() {
 
   const dispatch = useDispatch();
 
-  const { newPostSubmitSuccess } = useSelector(selectNewPost);
-  const { newCommentSubmitSuccess } = useSelector(selectNewComment);
-  const { addedCommentPostId } = useSelector(selectNewComment);
-  const { likedPostId, likePostStatus } = useSelector(selectLikes);
   const postList = useSelector(selectPosts);
+  const { newPostSubmitSuccess } = useSelector(selectNewPost);
+  const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
+  const likePostStatus = useSelector(selectLikePostStatus);
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch, newPostSubmitSuccess]);
 
   useEffect(() => {
-    if (newCommentSubmitSuccess) {
-      dispatch(fetchCommentsByPostId(addedCommentPostId));
+    dispatch(fetchComments());
+    dispatch(fetchLikes());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (newCommentSubmitStatus.isSuccess) {
+      dispatch(fetchComments());
     }
-  }, [dispatch, newCommentSubmitSuccess]);
+  }, [dispatch, newCommentSubmitStatus.isSuccess]);
 
   useEffect(() => {
     if (likePostStatus.isSuccess) {
-      dispatch(fetchLikesByPostId(likedPostId));
+      dispatch(fetchLikes());
     }
   }, [dispatch, likePostStatus.isSuccess]);
 
@@ -64,7 +71,6 @@ function Posts() {
               username={post.user.username}
               profileImg={post.user.profileImg}
               likes={post.likes}
-              comments={post.comments}
             />
           );
         })}

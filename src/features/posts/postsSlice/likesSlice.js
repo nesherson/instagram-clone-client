@@ -1,67 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-export const likePost = createAsyncThunk(
-  "postList/likePost",
-  async (postId, thunkAPI) => {
-    const { token } = JSON.parse(localStorage.getItem("userData"));
-
-    try {
-      const response = await fetch(
-        `http://localhost:5000/post/${postId}/like`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-        }
-      );
-
-      let data = await response.json();
-
-      if (response.status === 200) {
-        return data;
-      } else {
-        return thunkAPI.rejectWithValue(data);
-      }
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
-
-export const fetchLikes = createAsyncThunk(
-  "likeList/fetchLikes",
-  async (_, thunkAPI) => {
-    try {
-      const { token } = JSON.parse(localStorage.getItem("userData"));
-
-      const response = await fetch(`http://localhost:5000/post/likes`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-      });
-
-      let data = await response.json();
-
-      if (response.status === 200) {
-        return data;
-      } else {
-        return thunkAPI.rejectWithValue(data);
-      }
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
+import { fetchLikes, likePost } from "../postsApi/postsApi";
 
 const initialState = {
-  likeList: [],
-  likedPostId: null,
+  list: [],
   likesFetchStatus: {
     isFetching: false,
     isSuccess: false,
@@ -85,8 +27,9 @@ const likesSlice = createSlice({
       state.likesFetchStatus.isFetching = false;
       state.likesFetchStatus.isSuccess = true;
       state.likesFetchStatus.isError = false;
+      state.list = action.payload.likes;
     },
-    [fetchLikes.pending]: (state, action) => {
+    [fetchLikes.pending]: (state) => {
       state.likesFetchStatus.isFetching = true;
       state.likesFetchStatus.isSuccess = false;
       state.likesFetchStatus.isError = false;
@@ -100,8 +43,7 @@ const likesSlice = createSlice({
     [likePost.fulfilled]: (state, action) => {
       state.likePostStatus.isFetchking = false;
       state.likePostStatus.isSuccess = true;
-      state.isError = false;
-      state.likedPostId = action.payload.postId;
+      state.likePostStatus.isError = false;
     },
     [likePost.pending]: (state, action) => {
       state.likePostStatus.isFetchking = true;
@@ -117,8 +59,8 @@ const likesSlice = createSlice({
   },
 });
 
-export const selectLikes = (state) => state.likes;
-
+export const selectLikes = (state) => state.likes.list;
 export const selectLikePostStatus = (state) => state.likes.likePostStatus;
+export const selectLikeFetchStatus = (state) => state.likes.likesFetchStatus;
 
 export default likesSlice.reducer;
