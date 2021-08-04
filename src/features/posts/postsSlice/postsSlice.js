@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchPosts, submitNewPost } from "../postsApi/postsApi";
+import { fetchPosts, submitNewPost } from "../api/postsAPI";
 
 const initialState = {
   list: [],

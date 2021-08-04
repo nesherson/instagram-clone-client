@@ -4,7 +4,7 @@ import { PrivateRoute } from "./util/PrivateRoute";
 import Signup from "./features/auth/components/Signup/Signup";
 import Login from "./features/auth/components/Login/Login";
 import Feed from "./features/posts/components/Feed";
-import UserProfile from "./features/user/components/userProfile";
+import AuthUserProfile from "./features/user/components/AuthUserProfile";
 import PostDetails from './features/posts/components/PostDetails';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Feed />
       </PrivateRoute>
       <PrivateRoute path="/profile/:id">
-        <UserProfile/>
+        <AuthUserProfile/>
       </PrivateRoute>
       <PrivateRoute path="/post/:id">
         <PostDetails/>

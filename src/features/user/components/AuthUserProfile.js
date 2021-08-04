@@ -4,10 +4,9 @@ import { Route, NavLink, useRouteMatch, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 
-import { selectUser } from '../userSlice/userSlice';
-import { fetchUserByUsername } from '../userSlice/userSlice';
+import { selectAuthUser } from '../../auth/authSlice/authSlice';
 
-import { selectSavedPosts, fetchSavedPosts } from '../../posts/postsSlice/savedPostListSlice'
+import { selectSavedPosts, fetchSavedPosts } from '../../posts/postsSlice/savedPostsSlice'
 
 import Header from '../../posts/components/Header';
 
@@ -174,16 +173,13 @@ const Stats = styled.span`
 `;
 
 function UserProfile() {
-  const { id, profileImg, username, fullname, posts } = useSelector(selectUser);
+  
+  const { id, profileImg, username, fullname, posts } = useSelector(selectAuthUser);
   const savedPosts = useSelector(selectSavedPosts);
 
   const dispatch = useDispatch();
-  const params = useParams();
+  //const params = useParams();
   const { url } = useRouteMatch();
-
-  useEffect(() => {
-    dispatch(fetchUserByUsername(params.id));
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchSavedPosts(id));

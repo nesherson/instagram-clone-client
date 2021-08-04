@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchComments, submitNewComment } from "../postsApi/postsApi";
+import { fetchComments, submitNewComment } from "../api/commentsAPI";
 
 const initialState = {
   list: [],

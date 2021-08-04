@@ -28,15 +28,15 @@ export const fetchSavedPosts = createAsyncThunk(
 );
 
 const initialState = {
-  savedPosts: [],
+  postList: [],
   isFetching: false,
   isSuccess: false,
   isError: false,
   errorMessage: '',
 };
 
-const savedPostListSlice = createSlice({
-  name: 'savedPostList',
+const savedPostsSlice = createSlice({
+  name: 'savedPosts',
   initialState,
   reducers: {},
   extraReducers: {
@@ -44,7 +44,7 @@ const savedPostListSlice = createSlice({
       state.isFetching = false;
       state.isSuccess = true;
       state.isError = false;
-      state.savedPosts = action.payload.savedPosts;
+      state.postList = action.payload.savedPosts;
     },
     [fetchSavedPosts.pending]: (state, action) => {
       state.isFetching = true;
@@ -58,6 +58,6 @@ const savedPostListSlice = createSlice({
   },
 });
 
-export const selectSavedPosts = (state) => state.savedPostList.savedPosts;
+export const selectSavedPosts = (state) => state.savedPosts.postList;
 
-export default savedPostListSlice.reducer;
+export default savedPostsSlice.reducer;

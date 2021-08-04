@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectNewPost } from '../postsSlice/newPostSlice';
-import { selectPosts, fetchPosts } from '../postsSlice/postsSlice';
+import { fetchPosts } from '../api/postsAPI';
+import { selectNewPostSubmitStatus, selectPosts } from '../postsSlice/postsSlice';
 
-import { fetchComments } from '../postsApi/postsApi';
+import { fetchComments } from '../api/commentsAPI';
 import { selectNewCommentSubmitStatus } from '../postsSlice/commentsSlice';
 
-import { fetchLikes } from '../postsApi/postsApi';
-import { selectLikes, selectLikePostStatus } from '../postsSlice/likesSlice';
+import { fetchLikes } from '../api/likesAPI'
+import { selectLikePostStatus } from '../postsSlice/likesSlice';
 
 import Post from './Post/Post';
 
@@ -33,13 +33,13 @@ function Posts() {
   const dispatch = useDispatch();
 
   const postList = useSelector(selectPosts);
-  const { newPostSubmitSuccess } = useSelector(selectNewPost);
+  const newPostSubmitStatus  = useSelector(selectNewPostSubmitStatus);
   const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
   const likePostStatus = useSelector(selectLikePostStatus);
 
   useEffect(() => {
     dispatch(fetchPosts());
-  }, [dispatch, newPostSubmitSuccess]);
+  }, [dispatch, newPostSubmitStatus.isSuccess]);
 
   useEffect(() => {
     dispatch(fetchComments());

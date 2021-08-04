@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchLikes, likePost } from "../postsApi/postsApi";
+import { fetchLikes, likePost } from "../api/likesAPI";
 
 const initialState = {
   list: [],

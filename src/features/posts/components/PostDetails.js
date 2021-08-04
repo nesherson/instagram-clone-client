@@ -5,15 +5,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
 
-import { selectNewComment } from "../postsSlice/newCommentSlice";
+import { selectLikePostStatus } from "../postsSlice/likesSlice";
 
-import { submitNewComment } from "../postsSlice/newCommentSlice";
+import { selectNewCommentSubmitStatus } from "../postsSlice/commentsSlice";
 
-import { likePost, selectLikePostStatus } from "../postsSlice/likesSlice";
+import { fetchPostById } from "../api/postsAPI";
+import { fetchCommentsByPostId, submitNewComment } from "../api/commentsAPI";
+import { fetchLikesByPostId, likePost } from "../api/likesAPI";
 
-import { selectPost, fetchPostById, fetchCommentsByPostId, fetchLikesByPostId } from "../postsSlice/postSlice";
+import { selectPost } from "../postsSlice/postSlice";
 
-import { savePost } from "../../user/userSlice/userSlice";
+//import { savePost } from "../../user/userSlice/userSlice";
 
 import { NewCommentInput } from "./Post/NewCommentForm";
 import Modal from "../../../components/Modal/Modal";
@@ -175,14 +177,18 @@ const Link = styled(NavLink)`
 `;
 
 function PostDetails() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
 
-  const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
-  const { register, handleSubmit, setValue, watch, formState: { errors }} = useForm();
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const [showModal, setShowModal] = useState(false);
 
-  const { newCommentSubmitSuccess } = useSelector(selectNewComment);
+
+  const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
+
+  const { register, handleSubmit, setValue, watch, formState: { errors }} = useForm();
+
+
+  const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
   const likePostStatus = useSelector(selectLikePostStatus);
 
   const onSubmit = ({newComment}) => {
@@ -206,13 +212,13 @@ function PostDetails() {
     dispatch(likePost(id));
   };
 
-  const handleBookmark = () => {
-    const values = {
-      userId: user.id,
-      postId: id,
-    };
-    dispatch(savePost(values));
-  };
+  // const handleBookmark = () => {
+  //   const values = {
+  //     userId: user.id,
+  //     postId: id,
+  //   };
+  //   dispatch(savePost(values));
+  // };
 
   const isInputEmpty = () => {
     const newCommentValue = watch("newComment");
@@ -226,16 +232,16 @@ function PostDetails() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (newCommentSubmitSuccess) {
+    if (newCommentSubmitStatus.isSuccess) {
       dispatch(fetchCommentsByPostId(id));
     }
-  }, [dispatch, newCommentSubmitSuccess]);
+  }, [dispatch, newCommentSubmitStatus.isSuccess]);
 
   useEffect(() => {
-    if (newCommentSubmitSuccess) {
+    if (newCommentSubmitStatus.isSuccess) {
       setValue('newComment', '');
     }
-  }, [dispatch, newCommentSubmitSuccess]);
+  }, [dispatch, newCommentSubmitStatus.isSuccess]);
 
   useEffect(() => {
     dispatch(fetchLikesByPostId(id));
@@ -275,7 +281,8 @@ function PostDetails() {
                     <MessageCircle size={30} strokeWidth={1.3} />
                   </IconLeft>
                 </IconsWrapper>
-                <Icon onClick={handleBookmark}>
+                <Icon>
+                  {/*onClick={handleBookmark}*/}
                   <Bookmark size={30} strokeWidth={1.3} />
                 </Icon>
               </Social>

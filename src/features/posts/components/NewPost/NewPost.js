@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { selectAuthUser } from '../../../user/userSlice/authUserSlice/authUserSlice';
 
-import { submitNewPost } from '../../postsApi/postsApi';
+import { submitNewPost } from '../../api/postsAPI';
 import { selectNewPostSubmitStatus } from '../../postsSlice/postsSlice';
 
 import { ImageUrlInput, CaptionTextarea } from './NewPostForm';
