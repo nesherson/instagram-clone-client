@@ -3,7 +3,9 @@ import { NavLink, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
   
-import { signupUser, selectAuthUser } from '../../authSlice/authSlice';
+import { signupUser } from '../../authApi/authApi';
+
+import { selectSignupUserStatus } from '../../authSlice/authSlice';
 
 import { EmailInput, UsernameInput, FullnameInput, PasswordInput } from './SignupForm';
 
@@ -140,7 +142,7 @@ const Signup = () => {
   const dispatch = useDispatch();
 
   const { register, handleSubmit, formState: {errors} } = useForm();
-  const {isSuccess, isError, errorMessage} = useSelector(selectAuthUser);
+  const {isSuccess, isError, errorMessage} = useSelector(selectSignupUserStatus);
 
   const onSubmit = ({email, fullname, username, password}) => {
     const values = {email, fullname, username, password};
