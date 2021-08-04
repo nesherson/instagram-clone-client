@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectUser } from '../../../user/userSlice/userSlice';
+import { selectAuthUser } from '../../../user/userSlice/authUserSlice/authUserSlice';
 
 import { selectNewPost, submitNewPost} from '../../postsSlice/newPostSlice';
 
@@ -96,7 +96,7 @@ function NewPost() {
 
   const dispatch = useDispatch();
 
-  const { profileImg } = useSelector(selectUser);
+  const { profileImg } = useSelector(selectAuthUser);
 
   const { register, handleSubmit, reset, formState: {errors}} = useForm();
   const { isSuccess, isError, errorMessage } = useSelector(selectNewPost);

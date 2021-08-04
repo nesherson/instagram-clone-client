@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-import { selectUser } from '../../user/userSlice/userSlice'
+import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice'
 
 
 const Container = styled.div`
@@ -56,7 +56,7 @@ const Fullname = styled.span`
 `;
 
 function UserDetails() {
-  const { username, fullname, profileImg } = useSelector(selectUser);
+  const { username, fullname, profileImg } = useSelector(selectAuthUser);
 
   return (
     <Container>
