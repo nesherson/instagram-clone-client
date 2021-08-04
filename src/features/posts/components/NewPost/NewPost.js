@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { selectAuthUser } from '../../../user/userSlice/authUserSlice/authUserSlice';
 
-import { selectNewPost, submitNewPost} from '../../postsSlice/newPostSlice';
+import { submitNewPost } from '../../postsApi/postsApi';
+import { selectNewPostSubmitStatus } from '../../postsSlice/postsSlice';
 
 import { ImageUrlInput, CaptionTextarea } from './NewPostForm';
 
@@ -97,9 +98,9 @@ function NewPost() {
   const dispatch = useDispatch();
 
   const { profileImg } = useSelector(selectAuthUser);
+  const newPostSubmitStatus = useSelector(selectNewPostSubmitStatus);
 
   const { register, handleSubmit, reset, formState: {errors}} = useForm();
-  const { isSuccess, isError, errorMessage } = useSelector(selectNewPost);
 
   const onSubmit = ({imageUrl, caption}) => {
     const values = {imageUrl, caption};
@@ -108,10 +109,10 @@ function NewPost() {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (newPostSubmitStatus.isSuccess) {
       reset();
     }
-  }, [isSuccess]);
+  }, [newPostSubmitStatus.isSuccess]);
 
   return (
     <Container>
@@ -129,8 +130,8 @@ function NewPost() {
           <CaptionTextarea name='caption' register={register} required placeholder='Post caption...' errors={errors} />
         </FormControl>
       </Form>
-      { isError ?
-        <Warning>{errorMessage}</Warning>
+      { newPostSubmitStatus.isError ?
+        <Warning>{newPostSubmitStatus.errorMessage}</Warning>
         : null
       }
     </Container>
