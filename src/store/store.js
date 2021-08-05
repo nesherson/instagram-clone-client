@@ -5,6 +5,8 @@ import authUserReducer from '../features/user/userSlice/authUserSlice/authUserSl
 import postsReducer from '../features/posts/postsSlice/postsSlice';
 import authUserPostsReducer from '../features/user/userSlice/authUserSlice/authUserPostsSlice';
 import authUserSavedPostsReducer from '../features/user/userSlice/authUserSlice/authUserSavedPostsSlice';
+import userReducer from '../features/user/userSlice/userSlice/userSlice';
+import userPostsReducer from '../features/user/userSlice/userSlice/userPostsSlice';
 import commentsReducer from '../features/posts/postsSlice/commentsSlice';
 import likesReducer from '../features/posts/postsSlice/likesSlice'
 import savedPostsReducer from '../features/posts/postsSlice/savedPostsSlice';
@@ -17,6 +19,8 @@ export const store = configureStore({
     posts: postsReducer,
     authUserPosts: authUserPostsReducer,
     authUserSavedPosts: authUserSavedPostsReducer,
+    user: userReducer,
+    userPosts: userPostsReducer,
     comments: commentsReducer,
     likes: likesReducer,
     savedPosts: savedPostsReducer,
