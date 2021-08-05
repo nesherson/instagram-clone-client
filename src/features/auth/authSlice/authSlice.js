@@ -23,7 +23,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logoutUser: () => {
+    logoutUser: (state) => {
+      state.loginUserStatus.isSuccess = false;
+      state.signupUserStatus.isSuccess = false;
       localStorage.removeItem("userData");
     },
     clearError: (state) => {

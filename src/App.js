@@ -31,16 +31,26 @@ function App() {
         <PostDetails />
       </PrivateRoute>
 
-      {!userData ? (
+     
         <>
           <Route exact path='/' component={Login} />
           <Route path='/signup' component={Signup} />
         </>
-      ) : (
-        <Redirect to='/feed' />
-      )}
+      
     </Router>
   );
 }
 
 export default App;
+
+/*
+
+{!userData ? (
+        <>
+          <Route exact path='/' component={Login} />
+          <Route path='/signup' component={Signup} />
+        </>
+      ) : (
+        null
+      )}
+*/
