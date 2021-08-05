@@ -5,13 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { Bookmark, Grid, Heart, MessageCircle } from "react-feather";
 
 import { fetchPostsByUserId } from "../../posts/api/postsAPI";
+import { fetchSavedPosts } from "../../posts/api/savedPostsAPI";
 import { selectAuthUser } from "../userSlice/authUserSlice/authUserSlice";
 import {
   selectAuthUserPosts,
   selectaAuthUserPostsFetchStatus,
 } from "../userSlice/authUserSlice/authUserPostsSlice";
 
-//import { selectSavedPosts, fetchSavedPosts } from '../../posts/postsSlice/savedPostsSlice'
+import { selectSavedPosts } from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
 
 import Header from "../../posts/components/Header";
 
@@ -178,14 +179,14 @@ const Stats = styled.span`
 function AuthUserProfile() {
   const { userId, profileImg, username, fullname } = useSelector(selectAuthUser);
   const posts = useSelector(selectAuthUserPosts);
-  //const savedPosts = useSelector(selectSavedPosts);
+  const savedPosts = useSelector(selectSavedPosts);
 
   const dispatch = useDispatch();
   const { url } = useRouteMatch();
 
-  // useEffect(() => {
-  //   dispatch(fetchSavedPosts(id));
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchSavedPosts(userId));
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchPostsByUserId(userId));
@@ -242,23 +243,23 @@ function AuthUserProfile() {
             })}
           </Route>
           <Route path={`${url}/saved`}>
-            {/* {savedPosts.map((savedPost) => {
+            {savedPosts.map((savedPost) => {
           return (
             <Post key={savedPost.id}>
               <PostImg src={savedPost.post.imageUrl} />
               <PostStats className='after'>
                 <Stats>
                    <Heart size={20} color='#fff' fill='#fff'/>
-                   <span>{savedPost.post.likes.length}</span>
+                   <span>{savedPost.post.likes_count}</span>
                 </Stats>
                 <Stats>
                   <MessageCircle size={20} color='#fff' fill='#fff'/>
-                  <span>{savedPost.post.comments.length}</span>
+                  <span>{savedPost.post.comments_count}</span>
                 </Stats>
               </PostStats>
             </Post>
           );
-        })} */}
+        })}
           </Route>
         </PostsContainer>
       </Container>

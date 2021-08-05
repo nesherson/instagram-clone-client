@@ -6,10 +6,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
 
 import { submitNewComment } from "../../api/commentsAPI";
+import { likePost } from "../../api/likesAPI";
+import { savePost } from '../../api/savedPostsAPI'
 
 import { selectNewCommentSubmitStatus } from "../../postsSlice/commentsSlice";
-
-import { likePost } from "../../api/likesAPI";
 
 import { selectAuthUser } from "../../../user/userSlice/authUserSlice/authUserSlice";
 
@@ -206,13 +206,9 @@ function Post({ id, username, profileImg, postImg, caption }) {
     dispatch(likePost(id));
   };
 
-  // const handleBookmark = () => {
-  //   const values = {
-  //     userId: userId,
-  //     postId: id,
-  //   };
-  //   dispatch(savePost(values));
-  // };
+  const handleBookmark = () => {
+    dispatch(savePost(id));
+  };
 
   const isInputEmpty = () => {
     const newCommentValue = watch("newComment");
@@ -259,8 +255,7 @@ function Post({ id, username, profileImg, postImg, caption }) {
               <MessageCircle size={30} strokeWidth={1.3} />
             </IconLeft>
           </IconsWrapper>
-          <Icon>
-            {/* onClick={handleBookmark}*/}
+          <Icon onClick={handleBookmark}> 
             <Bookmark size={30} strokeWidth={1.3} />
           </Icon>
         </Social>

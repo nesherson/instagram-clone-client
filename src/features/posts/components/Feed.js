@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
+import { fetchAuthUser } from '../../user/userSlice/api/userAPI';
 
 import Header from './Header';
 import Posts from './Posts';
