@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice/authSlice';
 import authUserReducer from '../features/user/userSlice/authUserSlice/authUserSlice';
 import postsReducer from '../features/posts/postsSlice/postsSlice';
+import authUserPostsReducer from '../features/user/userSlice/authUserSlice/authUserPostsSlice'
 import commentsReducer from '../features/posts/postsSlice/commentsSlice';
 import likesReducer from '../features/posts/postsSlice/likesSlice'
 import savedPostsReducer from '../features/posts/postsSlice/savedPostsSlice';
@@ -13,6 +14,7 @@ export const store = configureStore({
     auth: authReducer,
     authUser: authUserReducer,
     posts: postsReducer,
+    authUserPosts: authUserPostsReducer,
     comments: commentsReducer,
     likes: likesReducer,
     savedPosts: savedPostsReducer,
