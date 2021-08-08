@@ -98,17 +98,17 @@ function NavDropdownMenu() {
 
   return (
     <Container>
-      <DropdownItem to={`/profile/${username}`} icon={<User width={20} />}>
+      <DropdownItem to={`/your-profile/${username}`} icon={<User width={20} />}>
         Profile
       </DropdownItem>
-      <DropdownItem to={`/profile/${username}/saved`} icon={<Bookmark width={20} />}>
+      <DropdownItem to={`/your-profile/${username}/saved`} icon={<Bookmark width={20} />}>
         Saved
       </DropdownItem>
       <DropdownItem to='#' icon={<Settings width={20} />}>
         Settings
       </DropdownItem>
       <Divider />
-      <Item onClick={handleLogout} >Log out</Item>
+      <Item onClick={handleLogout}>Log out</Item>
     </Container>
   );
 }
