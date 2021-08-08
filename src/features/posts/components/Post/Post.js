@@ -1,20 +1,20 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
-import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
+import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 
-import { submitNewComment } from "../../api/commentsAPI";
-import { likePost } from "../../api/likesAPI";
-import { savePost } from '../../api/savedPostsAPI'
+import { submitNewComment } from '../../api/commentsAPI';
+import { likePost } from '../../api/likesAPI';
+import { savePost } from '../../api/savedPostsAPI';
 
-import { selectNewCommentSubmitStatus } from "../../postsSlice/commentsSlice";
+import { selectNewCommentSubmitStatus } from '../../postsSlice/commentsSlice';
 
-import { selectAuthUser } from "../../../user/userSlice/authUserSlice/authUserSlice";
+import { selectAuthUser } from '../../../user/userSlice/authUserSlice/authUserSlice';
 
-import Modal from "../../../../components/Modal/Modal";
-import { NewCommentInput } from "./NewCommentForm";
+import Modal from '../../../../components/Modal/Modal';
+import { NewCommentInput } from './NewCommentForm';
 
 const Container = styled.article`
   border: 1px solid rgba(185, 185, 185, 0.4);
@@ -134,7 +134,7 @@ const Button = styled.button`
   border-radius: 6px;
   padding: 7px;
   margin-left: 5px;
-  background-color: ${(props) => (props.disabled ? "#bdcedb" : "#5b86a7")};
+  background-color: ${(props) => (props.disabled ? '#bdcedb' : '#5b86a7')};
   color: #fff;
   width: 10%;
   @media only screen and (max-width: 464px) {
@@ -164,18 +164,11 @@ const Link = styled(NavLink)`
   }
 `;
 
-function Post({ id, username, profileImg, postImg, caption }) {
+function Post({ id, username, profileImg, postImg, caption, comments, likes, isLiked }) {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  const { userId } = useSelector(selectAuthUser);
   const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
-  const comments = useSelector((state) =>
-    state.comments.list.filter((comment) => comment.postId === id)
-  );
-  const likes = useSelector((state) =>
-    state.likes.list.filter((like) => like.postId === id)
-  );
 
   const {
     register,
@@ -211,15 +204,15 @@ function Post({ id, username, profileImg, postImg, caption }) {
   };
 
   const isInputEmpty = () => {
-    const newCommentValue = watch("newComment");
-    return typeof newCommentValue === "undefined" || newCommentValue.length < 1
+    const newCommentValue = watch('newComment');
+    return typeof newCommentValue === 'undefined' || newCommentValue.length < 1
       ? true
       : false;
   };
 
   useEffect(() => {
     if (newCommentSubmitStatus.isSuccess) {
-      setValue("newComment", "");
+      setValue('newComment', '');
     }
   }, [newCommentSubmitStatus.isSuccess]);
 
@@ -249,13 +242,18 @@ function Post({ id, username, profileImg, postImg, caption }) {
         <Social>
           <IconsWrapper>
             <IconLeft onClick={handleLikePost}>
-              <Heart size={30} strokeWidth={1.3} />
+              <Heart
+                size={30}
+                strokeWidth={1.3}
+                fill={isLiked ? '#ff3333' : '#fff'}
+                stroke={isLiked ? '#ff3333' : '#000'}
+              />
             </IconLeft>
             <IconLeft>
               <MessageCircle size={30} strokeWidth={1.3} />
             </IconLeft>
           </IconsWrapper>
-          <Icon onClick={handleBookmark}> 
+          <Icon onClick={handleBookmark}>
             <Bookmark size={30} strokeWidth={1.3} />
           </Icon>
         </Social>
@@ -279,10 +277,10 @@ function Post({ id, username, profileImg, postImg, caption }) {
       </PostBody>
       <NewComment>
         <NewCommentInput
-          type="text"
-          name="newComment"
+          type='text'
+          name='newComment'
           register={register}
-          placeholder="Add a comment..."
+          placeholder='Add a comment...'
           errors={errors}
         />
         <Button disabled={isInputEmpty()} onClick={handleSubmit(onSubmit)}>
