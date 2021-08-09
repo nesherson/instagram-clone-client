@@ -164,7 +164,7 @@ const Link = styled(NavLink)`
   }
 `;
 
-function Post({ id, username, profileImg, postImg, caption, comments, likes, isLiked }) {
+function Post({ id, username, profileImg, postImg, caption, comments, likes, isLiked, isBookmarked }) {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
@@ -246,7 +246,7 @@ function Post({ id, username, profileImg, postImg, caption, comments, likes, isL
                 size={30}
                 strokeWidth={1.3}
                 fill={isLiked ? '#ff3333' : '#fff'}
-                stroke={isLiked ? '#ff3333' : '#000'}
+                stroke={isLiked ? '#ff3333' : '#262626'}
               />
             </IconLeft>
             <IconLeft>
@@ -254,7 +254,7 @@ function Post({ id, username, profileImg, postImg, caption, comments, likes, isL
             </IconLeft>
           </IconsWrapper>
           <Icon onClick={handleBookmark}>
-            <Bookmark size={30} strokeWidth={1.3} />
+            <Bookmark size={30} strokeWidth={1.3} fill={isBookmarked ? '#262626' : '#fff'} stroke='#262626' />
           </Icon>
         </Social>
         <Likes>{likes.length} likes</Likes>

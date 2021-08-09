@@ -16,6 +16,9 @@ import { selectLikePostStatus, selectLikes } from '../postsSlice/likesSlice';
 
 import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
 
+import { fetchSavedPosts } from '../api/savedPostsAPI';
+import { selectSavedPosts, selectPostSaveStatus } from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
+
 import Post from './Post/Post';
 
 const Container = styled.div`
@@ -40,9 +43,11 @@ function Posts() {
   const postList = useSelector(selectPosts);
   const likes = useSelector(selectLikes);
   const comments = useSelector(selectComments);
+  const savedPosts = useSelector(selectSavedPosts);
   const newPostSubmitStatus = useSelector(selectNewPostSubmitStatus);
   const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
   const likePostStatus = useSelector(selectLikePostStatus);
+  const postSaveStatus = useSelector(selectPostSaveStatus);
 
   useEffect(() => {
     dispatch(fetchPosts());
@@ -51,6 +56,7 @@ function Posts() {
   useEffect(() => {
     dispatch(fetchComments());
     dispatch(fetchLikes());
+    dispatch(fetchSavedPosts());
   }, [dispatch]);
 
   useEffect(() => {
@@ -65,13 +71,20 @@ function Posts() {
     }
   }, [dispatch, likePostStatus.isSuccess]);
 
+  useEffect(() => {
+    if (postSaveStatus.isSuccess) {
+      dispatch(fetchSavedPosts());
+    }
+  }, [dispatch, postSaveStatus.isSuccess]);
+
   return (
     <Container>
       <PostList>
         {postList.map((post) => {
-          const postLikes = likes.filter((like) => like.postId === post.id);
-          const isLiked = postLikes.some((like) => like.userId === userId);
+          const postLikes = likes.filter((like) => like.postId === post.id);          
           const postComments = comments.filter((comment) => comment.postId === post.id);
+          const isLiked = postLikes.some((like) => like.userId === userId);
+          const isBookmarked = savedPosts.some((savedPost) => savedPost.post.id === post.id);
           return (
             <Post
               key={post.id}
@@ -83,6 +96,7 @@ function Posts() {
               comments={postComments}
               likes={postLikes}
               isLiked={isLiked}
+              isBookmarked={isBookmarked}
             />
           );
         })}
