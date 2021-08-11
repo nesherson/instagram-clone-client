@@ -1,25 +1,26 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { MoreHorizontal, Heart, MessageCircle, Bookmark } from "react-feather";
+import { MoreHorizontal, Heart, MessageCircle, Bookmark } from 'react-feather';
 
-import { selectLikePostStatus } from "../postsSlice/likesSlice";
+import { fetchPostById } from '../api/postsAPI';
+import { selectPost } from '../postsSlice/postSlice';
 
-import { selectNewCommentSubmitStatus } from "../postsSlice/commentsSlice";
+import { fetchCommentsByPostId, submitNewComment } from '../api/commentsAPI';
+import { selectNewCommentSubmitStatus } from '../postsSlice/commentsSlice';
 
-import { fetchPostById } from "../api/postsAPI";
-import { fetchCommentsByPostId, submitNewComment } from "../api/commentsAPI";
-import { fetchLikesByPostId, likePost } from "../api/likesAPI";
-
-import { selectPost } from "../postsSlice/postSlice";
+import { fetchLikesByPostId, likePost } from '../api/likesAPI';
+import { selectLikePostStatus } from '../postsSlice/likesSlice';
 
 import { savePost } from '../api/savedPostsAPI';
 
-import { NewCommentInput } from "./Post/NewCommentForm";
-import Modal from "../../../components/Modal/Modal";
-import Header from "./Header";
+import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
+
+import { NewCommentInput } from './Post/NewCommentForm';
+import Modal from '../../../components/Modal/Modal';
+import Header from './Header';
 
 const Container = styled.article`
   margin: 94px auto 25px auto;
@@ -149,7 +150,7 @@ const Button = styled.button`
   border-radius: 6px;
   padding: 7px;
   margin-left: 5px;
-  background-color: ${(props) => (props.disabled ? "#bdcedb" : "#5b86a7")};
+  background-color: ${(props) => (props.disabled ? '#bdcedb' : '#5b86a7')};
   color: #fff;
   width: 10%;
   @media only screen and (max-width: 464px) {
@@ -177,23 +178,29 @@ const Link = styled(NavLink)`
 `;
 
 function PostDetails() {
-
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const postParamId = useParams().id;
   const [showModal, setShowModal] = useState(false);
 
-  const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
+  const { id, imageUrl, caption, likes, comments, user } =
+    useSelector(selectPost);
+  const { userId } = useSelector(selectAuthUser);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors }} = useForm();
-
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   const newCommentSubmitStatus = useSelector(selectNewCommentSubmitStatus);
   const likePostStatus = useSelector(selectLikePostStatus);
 
-  const onSubmit = ({newComment}) => {
+  const onSubmit = ({ newComment }) => {
     const values = {
       postId: id,
-      newComment
+      newComment,
     };
 
     dispatch(submitNewComment(values));
@@ -212,22 +219,22 @@ function PostDetails() {
   };
 
   const handleBookmark = () => {
-    const values = {
-      userId: user.id,
-      postId: id,
-    };
-    dispatch(savePost(values));
+    dispatch(savePost(id));
   };
 
   const isInputEmpty = () => {
-    const newCommentValue = watch("newComment");
-    return typeof newCommentValue === "undefined" || newCommentValue.length < 1
+    const newCommentValue = watch('newComment');
+    return typeof newCommentValue === 'undefined' || newCommentValue.length < 1
       ? true
       : false;
   };
 
+  const isLiked = () => {
+    return likes.some((like) => like.userId === userId);
+  };
+
   useEffect(() => {
-    dispatch(fetchPostById(id));
+    dispatch(fetchPostById(postParamId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -243,7 +250,9 @@ function PostDetails() {
   }, [dispatch, newCommentSubmitStatus.isSuccess]);
 
   useEffect(() => {
-    dispatch(fetchLikesByPostId(id));
+    if (likePostStatus.isSuccess) {
+      dispatch(fetchLikesByPostId(id));
+    }
   }, [dispatch, likePostStatus.isSuccess]);
 
   return (
@@ -274,7 +283,12 @@ function PostDetails() {
               <Social>
                 <IconsWrapper>
                   <IconLeft onClick={handleLikePost}>
-                    <Heart size={30} strokeWidth={1.3} />
+                    <Heart
+                      size={30}
+                      strokeWidth={1.3}
+                      fill={isLiked() ? '#ff3333' : '#fff'}
+                      stroke={isLiked() ? '#ff3333' : '#262626'}
+                    />
                   </IconLeft>
                   <IconLeft>
                     <MessageCircle size={30} strokeWidth={1.3} />
@@ -303,8 +317,17 @@ function PostDetails() {
               </PostComments>
             </PostBody>
             <NewComment>
-              <NewCommentInput type='text' name='newComment' register={register} placeholder='Add a comment...' errors={errors} />
-              <Button disabled={isInputEmpty()} onClick={handleSubmit(onSubmit)}>
+              <NewCommentInput
+                type='text'
+                name='newComment'
+                register={register}
+                placeholder='Add a comment...'
+                errors={errors}
+              />
+              <Button
+                disabled={isInputEmpty()}
+                onClick={handleSubmit(onSubmit)}
+              >
                 Post
               </Button>
             </NewComment>
