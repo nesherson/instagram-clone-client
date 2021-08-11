@@ -250,7 +250,9 @@ function Post({ id, username, profileImg, postImg, caption, comments, likes, isL
               />
             </IconLeft>
             <IconLeft>
+              <Link to={`/post/${id}`}>
               <MessageCircle size={30} strokeWidth={1.3} />
+              </Link>
             </IconLeft>
           </IconsWrapper>
           <Icon onClick={handleBookmark}>
