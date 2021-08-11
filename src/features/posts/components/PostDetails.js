@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createRef } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -181,9 +181,14 @@ const Link = styled(NavLink)`
 `;
 
 function PostDetails() {
+
   const dispatch = useDispatch();
-  const postParamId = useParams().id;
+
   const [showModal, setShowModal] = useState(false);
+
+  const newCommentRef = createRef();
+
+  const postParamId = useParams().id;
 
   const { id, imageUrl, caption, likes, comments, user } =
     useSelector(selectPost);
@@ -225,6 +230,10 @@ function PostDetails() {
 
   const handleBookmark = () => {
     dispatch(savePost(id));
+  };
+
+  const focusNewCommentForm = () => {
+    newCommentRef.current.focus();
   };
 
   const isInputEmpty = () => {
@@ -300,7 +309,7 @@ function PostDetails() {
                       stroke={isLiked() ? '#ff3333' : '#262626'}
                     />
                   </IconLeft>
-                  <IconLeft>
+                  <IconLeft onClick={focusNewCommentForm}>
                     <MessageCircle size={30} strokeWidth={1.3} />
                   </IconLeft>
                 </IconsWrapper>
@@ -338,6 +347,7 @@ function PostDetails() {
                 register={register}
                 placeholder='Add a comment...'
                 errors={errors}
+                ref={newCommentRef}
               />
               <Button
                 disabled={isInputEmpty()}

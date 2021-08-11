@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { forwardRef } from 'react';
 
 const StyledInput = styled.input`
   border: none;
@@ -9,10 +10,18 @@ const StyledInput = styled.input`
   }
 `;
 
-const NewCommentInput = ({type, name, register, placeholder, errors}) => {
+const NewCommentInput = forwardRef(
+  ({ type, name, register, placeholder, errors }, ref) => {
     return (
-        <StyledInput type={type} {...register(name)} placeholder={placeholder} errors={errors} />
+      <StyledInput
+        type={type}
+        {...register(name)}
+        placeholder={placeholder}
+        errors={errors}
+        ref={ref}
+      />
     );
-};
+  }
+);
 
 export { NewCommentInput };
