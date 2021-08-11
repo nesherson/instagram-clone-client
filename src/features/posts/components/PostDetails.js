@@ -15,7 +15,7 @@ import { fetchLikesByPostId, likePost } from "../api/likesAPI";
 
 import { selectPost } from "../postsSlice/postSlice";
 
-//import { savePost } from "../../user/userSlice/userSlice";
+import { savePost } from '../api/savedPostsAPI';
 
 import { NewCommentInput } from "./Post/NewCommentForm";
 import Modal from "../../../components/Modal/Modal";
@@ -182,7 +182,6 @@ function PostDetails() {
   const { id } = useParams();
   const [showModal, setShowModal] = useState(false);
 
-
   const { imageUrl, caption, likes, comments, user } = useSelector(selectPost);
 
   const { register, handleSubmit, setValue, watch, formState: { errors }} = useForm();
@@ -212,13 +211,13 @@ function PostDetails() {
     dispatch(likePost(id));
   };
 
-  // const handleBookmark = () => {
-  //   const values = {
-  //     userId: user.id,
-  //     postId: id,
-  //   };
-  //   dispatch(savePost(values));
-  // };
+  const handleBookmark = () => {
+    const values = {
+      userId: user.id,
+      postId: id,
+    };
+    dispatch(savePost(values));
+  };
 
   const isInputEmpty = () => {
     const newCommentValue = watch("newComment");
@@ -281,8 +280,7 @@ function PostDetails() {
                     <MessageCircle size={30} strokeWidth={1.3} />
                   </IconLeft>
                 </IconsWrapper>
-                <Icon>
-                  {/*onClick={handleBookmark}*/}
+                <Icon onClick={handleBookmark}>
                   <Bookmark size={30} strokeWidth={1.3} />
                 </Icon>
               </Social>
