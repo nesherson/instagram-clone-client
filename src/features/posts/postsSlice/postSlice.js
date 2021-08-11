@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { fetchPostById } from '../api/postsAPI';
 import { fetchCommentsByPostId } from '../api/commentsAPI';

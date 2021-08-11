@@ -1,20 +1,20 @@
-import { useEffect } from "react";
-import styled from "styled-components";
-import { Route, NavLink, useRouteMatch, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { Bookmark, Grid, Heart, MessageCircle } from "react-feather";
+import { useEffect } from 'react';
+import styled from 'styled-components';
+import { Route, NavLink, useRouteMatch, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Bookmark, Grid, Heart, MessageCircle } from 'react-feather';
 
-import { fetchPostsByUserId } from "../../posts/api/postsAPI";
-import { fetchSavedPosts } from "../../posts/api/savedPostsAPI";
-import { selectAuthUser } from "../userSlice/authUserSlice/authUserSlice";
+import { fetchPostsByUserId } from '../../posts/api/postsAPI';
+import { fetchSavedPosts } from '../../posts/api/savedPostsAPI';
+import { selectAuthUser } from '../userSlice/authUserSlice/authUserSlice';
 import {
   selectAuthUserPosts,
   selectaAuthUserPostsFetchStatus,
-} from "../userSlice/authUserSlice/authUserPostsSlice";
+} from '../userSlice/authUserSlice/authUserPostsSlice';
 
 import { selectSavedPosts } from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
 
-import Header from "../../posts/components/Header";
+import Header from '../../posts/components/Header';
 
 const Container = styled.section`
   margin-top: 64px;
@@ -177,12 +177,15 @@ const Stats = styled.span`
 `;
 
 function AuthUserProfile() {
-  const { userId, profileImg, username, fullname } = useSelector(selectAuthUser);
+  const { userId, profileImg, username, fullname } =
+    useSelector(selectAuthUser);
   const posts = useSelector(selectAuthUserPosts);
   const savedPosts = useSelector(selectSavedPosts);
 
   const dispatch = useDispatch();
   const { url } = useRouteMatch();
+
+  console.log('url: ', url);
 
   useEffect(() => {
     dispatch(fetchSavedPosts(userId));
@@ -211,13 +214,13 @@ function AuthUserProfile() {
         <Selection>
           <ItemWrapper exact to={`${url}`}>
             <ItemIcon>
-              <Grid size="100%" viewBox="0 0 24 24" />
+              <Grid size='100%' viewBox='0 0 24 24' />
             </ItemIcon>
             <SelectionItem>Posts</SelectionItem>
           </ItemWrapper>
           <ItemWrapper to={`${url}/saved`}>
             <ItemIcon>
-              <Bookmark size="100%" viewBox="0 0 24 24" />
+              <Bookmark size='100%' viewBox='0 0 24 24' />
             </ItemIcon>
             <SelectionItem>Saved</SelectionItem>
           </ItemWrapper>
@@ -228,13 +231,13 @@ function AuthUserProfile() {
               return (
                 <Post key={post.id}>
                   <PostImg src={post.imageUrl} />
-                  <PostStats className="after">
+                  <PostStats className='after'>
                     <Stats>
-                      <Heart size={20} color="#fff" fill="#fff" />
+                      <Heart size={20} color='#fff' fill='#fff' />
                       <span>{post.like_count}</span>
                     </Stats>
                     <Stats>
-                      <MessageCircle size={20} color="#fff" fill="#fff" />
+                      <MessageCircle size={20} color='#fff' fill='#fff' />
                       <span>{post.comment_count}</span>
                     </Stats>
                   </PostStats>
@@ -243,23 +246,23 @@ function AuthUserProfile() {
             })}
           </Route>
           <Route path={`${url}/saved`}>
-            {savedPosts.map((savedPost) => {
-          return (
-            <Post key={savedPost.id}>
-              <PostImg src={savedPost.post.imageUrl} />
-              <PostStats className='after'>
-                <Stats>
-                   <Heart size={20} color='#fff' fill='#fff'/>
-                   <span>{savedPost.post.likes_count}</span>
-                </Stats>
-                <Stats>
-                  <MessageCircle size={20} color='#fff' fill='#fff'/>
-                  <span>{savedPost.post.comments_count}</span>
-                </Stats>
-              </PostStats>
-            </Post>
-          );
-        })}
+          {savedPosts.map((savedPost) => {
+              return (
+                <Post key={savedPost.id}>
+                  <PostImg src={savedPost.post.imageUrl} />
+                  <PostStats className='after'>
+                    <Stats>
+                      <Heart size={20} color='#fff' fill='#fff' />
+                      <span>{savedPost.post.likes_count}</span>
+                    </Stats>
+                    <Stats>
+                      <MessageCircle size={20} color='#fff' fill='#fff' />
+                      <span>{savedPost.post.comments_count}</span>
+                    </Stats>
+                  </PostStats>
+                </Post>
+              );
+            })}
           </Route>
         </PostsContainer>
       </Container>
