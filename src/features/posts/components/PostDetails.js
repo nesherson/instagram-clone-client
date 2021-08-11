@@ -18,6 +18,9 @@ import { savePost } from '../api/savedPostsAPI';
 
 import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
 
+import { fetchSavedPosts } from '../api/savedPostsAPI';
+import { selectSavedPosts, selectSavedPostsFetchStatus } from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
+
 import { NewCommentInput } from './Post/NewCommentForm';
 import Modal from '../../../components/Modal/Modal';
 import Header from './Header';
@@ -185,6 +188,8 @@ function PostDetails() {
   const { id, imageUrl, caption, likes, comments, user } =
     useSelector(selectPost);
   const { userId } = useSelector(selectAuthUser);
+  const savedPosts = useSelector(selectSavedPosts);
+  const savedPostsFetchStatus = useSelector(selectSavedPostsFetchStatus);
 
   const {
     register,
@@ -233,6 +238,10 @@ function PostDetails() {
     return likes.some((like) => like.userId === userId);
   };
 
+  const isBookmarked = () => {
+    return savedPosts.some((savedPost) => savedPost.post.id === id);
+  };
+
   useEffect(() => {
     dispatch(fetchPostById(postParamId));
   }, [dispatch]);
@@ -240,11 +249,6 @@ function PostDetails() {
   useEffect(() => {
     if (newCommentSubmitStatus.isSuccess) {
       dispatch(fetchCommentsByPostId(id));
-    }
-  }, [dispatch, newCommentSubmitStatus.isSuccess]);
-
-  useEffect(() => {
-    if (newCommentSubmitStatus.isSuccess) {
       setValue('newComment', '');
     }
   }, [dispatch, newCommentSubmitStatus.isSuccess]);
@@ -254,6 +258,12 @@ function PostDetails() {
       dispatch(fetchLikesByPostId(id));
     }
   }, [dispatch, likePostStatus.isSuccess]);
+
+  useEffect(() => {
+    if (savedPostsFetchStatus.isSuccess) {
+      dispatch(fetchSavedPosts());
+    }
+  }, [dispatch, savedPostsFetchStatus.isSuccess]);
 
   return (
     <>
@@ -295,7 +305,12 @@ function PostDetails() {
                   </IconLeft>
                 </IconsWrapper>
                 <Icon onClick={handleBookmark}>
-                  <Bookmark size={30} strokeWidth={1.3} />
+                  <Bookmark
+                    size={30}
+                    strokeWidth={1.3}
+                    fill={isBookmarked() ? '#262626' : '#fff'}
+                    stroke='#262626'
+                  />
                 </Icon>
               </Social>
               <Likes>{likes.length} likes</Likes>
