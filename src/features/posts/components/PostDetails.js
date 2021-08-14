@@ -19,7 +19,10 @@ import { savePost } from '../api/savedPostsAPI';
 import { selectAuthUser } from '../../user/userSlice/authUserSlice/authUserSlice';
 
 import { fetchSavedPosts } from '../api/savedPostsAPI';
-import { selectSavedPosts, selectSavedPostsFetchStatus } from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
+import {
+  selectSavedPosts,
+  selectSavedPostsFetchStatus,
+} from '../../user/userSlice/authUserSlice/authUserSavedPostsSlice';
 
 import { NewCommentInput } from './Post/NewCommentForm';
 import Modal from '../../../components/Modal/Modal';
@@ -181,7 +184,6 @@ const Link = styled(NavLink)`
 `;
 
 function PostDetails() {
-
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);

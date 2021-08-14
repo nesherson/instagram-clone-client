@@ -1,18 +1,17 @@
-import { useEffect } from "react";
-import styled from "styled-components";
-import { Route, NavLink, useRouteMatch, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { Grid, Heart, MessageCircle } from "react-feather";
+import { useEffect } from 'react';
+import styled from 'styled-components';
+import { Route, NavLink, useRouteMatch, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Grid, Heart, MessageCircle } from 'react-feather';
 
-import { fetchUserByUsername } from "../userSlice/api/userAPI";
-import { fetchPostsByUserId } from "../../posts/api/postsAPI"; 
+import { fetchUserByUsername } from '../userSlice/api/userAPI';
+import { fetchPostsByUserId } from '../../posts/api/postsAPI';
 
-import { selectUser } from '../userSlice/userSlice/userSlice'
+import { selectUser } from '../userSlice/userSlice/userSlice';
 
-import { selectUserPosts } from "../userSlice/userSlice/userPostsSlice";
+import { selectUserPosts } from '../userSlice/userSlice/userPostsSlice';
 
-
-import Header from "../../posts/components/Header";
+import Header from '../../posts/components/Header';
 
 const Container = styled.section`
   margin-top: 64px;
@@ -175,8 +174,7 @@ const Stats = styled.span`
 `;
 
 function UserProfile() {
-
-  const { id } = useParams();
+  const usernameParam = useParams().id;
 
   const { userId, profileImg, username, fullname } = useSelector(selectUser);
   const posts = useSelector(selectUserPosts);
@@ -185,7 +183,7 @@ function UserProfile() {
   const { url } = useRouteMatch();
 
   useEffect(() => {
-    dispatch(fetchUserByUsername(id));
+    dispatch(fetchUserByUsername(usernameParam));
   }, [dispatch]);
 
   useEffect(() => {
@@ -211,7 +209,7 @@ function UserProfile() {
         <Selection>
           <ItemWrapper exact to={`${url}`}>
             <ItemIcon>
-              <Grid size="100%" viewBox="0 0 24 24" />
+              <Grid size='100%' viewBox='0 0 24 24' />
             </ItemIcon>
             <SelectionItem>Posts</SelectionItem>
           </ItemWrapper>
@@ -222,13 +220,13 @@ function UserProfile() {
               return (
                 <Post key={post.id}>
                   <PostImg src={post.imageUrl} />
-                  <PostStats className="after">
+                  <PostStats className='after'>
                     <Stats>
-                      <Heart size={20} color="#fff" fill="#fff" />
+                      <Heart size={20} color='#fff' fill='#fff' />
                       <span>{post.likes_count}</span>
                     </Stats>
                     <Stats>
-                      <MessageCircle size={20} color="#fff" fill="#fff" />
+                      <MessageCircle size={20} color='#fff' fill='#fff' />
                       <span>{post.comments_count}</span>
                     </Stats>
                   </PostStats>

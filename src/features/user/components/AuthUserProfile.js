@@ -185,8 +185,6 @@ function AuthUserProfile() {
   const dispatch = useDispatch();
   const { url } = useRouteMatch();
 
-  console.log('url: ', url);
-
   useEffect(() => {
     dispatch(fetchSavedPosts(userId));
   }, [dispatch]);
@@ -246,7 +244,7 @@ function AuthUserProfile() {
             })}
           </Route>
           <Route path={`${url}/saved`}>
-          {savedPosts.map((savedPost) => {
+            {savedPosts.map((savedPost) => {
               return (
                 <Post key={savedPost.id}>
                   <PostImg src={savedPost.post.imageUrl} />
